@@ -175,7 +175,240 @@
     }
 
     modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeTopicPicker(); closeWordDetail(); } });
+
+    /* ══════════════════════════════════════════════
+       TOPIC PICKER TOGGLE (Thêm vào bộ từ của tôi)
+    ══════════════════════════════════════════════ */
+    const topicPickerOverlay = document.createElement('div');
+    topicPickerOverlay.id = 'cv-topic-picker-overlay';
+    topicPickerOverlay.className = 'cv-topic-picker-overlay';
+    topicPickerOverlay.innerHTML = `<div class="cv-topic-picker-box" id="cv-topic-picker-box"></div>`;
+    document.body.appendChild(topicPickerOverlay);
+
+    topicPickerOverlay.addEventListener('click', (e) => { if (e.target === topicPickerOverlay) closeTopicPicker(); });
+
+    function openTopicPicker(html) {
+        document.getElementById('cv-topic-picker-box').innerHTML = html;
+        topicPickerOverlay.classList.add('cv-tp-active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => { topicPickerOverlay.querySelector('input')?.focus(); }, 80);
+    }
+
+    function closeTopicPicker() {
+        topicPickerOverlay.classList.remove('cv-tp-active');
+        document.body.style.overflow = '';
+    }
+
+    function showTopicPickerToggle(word) {
+        const courses = loadCustomCourses();
+        const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"/></svg>`;
+
+        const topicListHtml = courses.length === 0
+            ? `<div class="cv-tp-empty">
+                <div style="font-size:2rem;margin-bottom:10px">📭</div>
+                <p>Bạn chưa có danh sách nào.<br>Hãy tạo danh sách đầu tiên bên dưới!</p>
+               </div>`
+            : `<div class="cv-tp-topic-list" id="cv-tp-topic-list">
+                ${courses.map(t => `
+                  <div class="cv-tp-topic-item" data-topic-id="${t.id}">
+                    <div class="cv-tp-topic-emoji">${extractEmoji(t.title)}</div>
+                    <div class="cv-tp-topic-info">
+                      <div class="cv-tp-topic-name">${escHtml(t.title)}</div>
+                      <div class="cv-tp-topic-count">${t.words.length} từ vựng</div>
+                    </div>
+                    <div class="cv-tp-check">${checkIcon}</div>
+                  </div>`).join('')}
+               </div>`;
+
+        openTopicPicker(`
+          <div class="cv-modal-header">
+            <h3>📚 Thêm vào bộ từ của tôi</h3>
+            <button class="cv-modal-close" id="cv-tp-close-btn" type="button">&times;</button>
+          </div>
+          <div class="cv-modal-body">
+            <p style="font-size:.83rem;color:var(--gray-light);margin-bottom:14px">
+              Chọn danh sách để thêm từ <strong style="color:var(--dark-blue)">"${escHtml(word.word)}"</strong>:
+            </p>
+            ${topicListHtml}
+            <div class="cv-tp-create-row" id="cv-tp-create-row" role="button" tabindex="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>
+              Tạo danh sách mới
+            </div>
+            <div class="cv-tp-new-wrap" id="cv-tp-new-wrap">
+              <label style="font-size:.78rem;font-weight:700;color:var(--gray-light);text-transform:uppercase;letter-spacing:.05em">Tên danh sách mới</label>
+              <input class="cv-form-input" id="cv-tp-new-name" placeholder="Ví dụ: 🏢 Từ vựng văn phòng" maxlength="60">
+              <div style="display:flex;gap:8px;justify-content:flex-end">
+                <button class="btn btn-primary btn-small" id="cv-tp-confirm-new-btn">Tạo và thêm vào</button>
+              </div>
+            </div>
+          </div>
+          <div class="cv-modal-footer">
+            <button class="btn btn-secondary" id="cv-tp-cancel-btn">Hủy</button>
+            <button class="btn btn-primary" id="cv-tp-add-btn" ${courses.length === 0 ? 'disabled style="opacity:.45;cursor:not-allowed"' : ''}>Thêm vào</button>
+          </div>`);
+
+        /* ── Bind events ── */
+        document.getElementById('cv-tp-close-btn').addEventListener('click', closeTopicPicker);
+        document.getElementById('cv-tp-cancel-btn').addEventListener('click', closeTopicPicker);
+
+        let selectedTopicId = null;
+
+        /* Topic item selection */
+        document.querySelectorAll('.cv-tp-topic-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.cv-tp-topic-item').forEach(i => i.classList.remove('cv-tp-selected'));
+                item.classList.add('cv-tp-selected');
+                selectedTopicId = item.dataset.topicId;
+                document.getElementById('cv-tp-add-btn').removeAttribute('disabled');
+                document.getElementById('cv-tp-add-btn').style.opacity = '';
+                document.getElementById('cv-tp-add-btn').style.cursor = '';
+            });
+        });
+
+        /* Toggle "Tạo danh sách mới" form */
+        const createRow = document.getElementById('cv-tp-create-row');
+        const newWrap = document.getElementById('cv-tp-new-wrap');
+        createRow.addEventListener('click', () => {
+            newWrap.classList.toggle('cv-tp-new-visible');
+            if (newWrap.classList.contains('cv-tp-new-visible')) {
+                document.getElementById('cv-tp-new-name').focus();
+            }
+        });
+        createRow.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') createRow.click(); });
+
+        /* "Tạo và thêm vào" */
+        document.getElementById('cv-tp-confirm-new-btn').addEventListener('click', () => {
+            const nameInput = document.getElementById('cv-tp-new-name');
+            const name = nameInput.value.trim();
+            if (!name) { showInputError(nameInput, 'Vui lòng nhập tên danh sách'); return; }
+            createTopic({ title: name, description: '', lang: 'en' });
+            const updatedCourses = loadCustomCourses();
+            const newTopic = updatedCourses[updatedCourses.length - 1];
+            addWord(newTopic.id, {
+                word: word.word, transcription: word.transcription,
+                mean: word.mean, wordtype: word.wordtype,
+                example: word.example, example_vi: word.example_vi
+            });
+            renderCustomPanel();
+            closeTopicPicker();
+            showToast(`✅ Đã tạo "${escHtml(name)}" và thêm từ "${escHtml(word.word)}"`);
+        });
+        document.getElementById('cv-tp-new-name').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('cv-tp-confirm-new-btn').click();
+        });
+
+        /* "Thêm vào" selected topic */
+        document.getElementById('cv-tp-add-btn').addEventListener('click', () => {
+            if (!selectedTopicId) return;
+            const target = loadCustomCourses().find(t => t.id === selectedTopicId);
+            if (!target) return;
+            /* Tránh thêm trùng */
+            const isDuplicate = target.words.some(w => w.word.toLowerCase() === word.word.toLowerCase());
+            if (isDuplicate) {
+                showToast(`⚠️ Từ "${escHtml(word.word)}" đã có trong "${escHtml(target.title)}"`);
+                closeTopicPicker();
+                return;
+            }
+            addWord(selectedTopicId, {
+                word: word.word, transcription: word.transcription,
+                mean: word.mean, wordtype: word.wordtype,
+                example: word.example, example_vi: word.example_vi
+            });
+            renderCustomPanel();
+            closeTopicPicker();
+            showToast(`✅ Đã thêm "${escHtml(word.word)}" vào "${escHtml(target.title)}"`);
+        });
+    }
+
+    /* ── Toast notification ── */
+    function showToast(msg) {
+        let toast = document.getElementById('cv-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'cv-toast';
+            toast.className = 'cv-toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.classList.add('cv-toast-show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('cv-toast-show'), 2800);
+    }
+
+    /* ══════════════════════════════════════════════
+       WORD DETAIL OVERLAY (click cv-word-row)
+    ══════════════════════════════════════════════ */
+    const wordDetailOverlay = document.createElement('div');
+    wordDetailOverlay.id = 'cv-word-detail-overlay';
+    wordDetailOverlay.className = 'cv-topic-picker-overlay';
+    wordDetailOverlay.innerHTML = `<div class="cv-topic-picker-box" id="cv-word-detail-box"></div>`;
+    document.body.appendChild(wordDetailOverlay);
+
+    wordDetailOverlay.addEventListener('click', (e) => {
+        if (e.target === wordDetailOverlay) closeWordDetail();
+    });
+
+    function closeWordDetail() {
+        wordDetailOverlay.classList.remove('cv-tp-active');
+        document.body.style.overflow = '';
+    }
+
+    function openWordDetailOverlay(word, showAddBtn, lang) {
+        const voiceIconMd = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
+        const addToMyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>`;
+
+        const box = document.getElementById('cv-word-detail-box');
+        box.innerHTML = `
+          <div class="cv-modal-header">
+            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+              <h3 style="font-size:1.15rem;font-weight:800;color:var(--dark-blue)">${escHtml(word.word)}</h3>
+              ${word.transcription ? `<span style="font-size:.85rem;color:var(--gray-light);font-weight:500">${escHtml(word.transcription)}</span>` : ''}
+            </div>
+            <button class="cv-modal-close" id="cv-wd-close-btn" type="button">&times;</button>
+          </div>
+          <div class="cv-modal-body">
+            <div class="cv-expand-grid" style="gap:14px 24px">
+              <div class="cv-expand-item">
+                <span class="cv-expand-label">Nghe phát âm</span>
+                <button class="cv-voice-btn cv-expand-voice" id="cv-wd-voice-btn" title="Nghe phát âm" style="padding:6px 12px;font-size:.82rem">
+                  ${voiceIconMd}&thinsp;Nghe
+                </button>
+              </div>
+              <div class="cv-expand-item">
+                <span class="cv-expand-label">Nghĩa</span>
+                <span class="cv-expand-val cv-mean">${escHtml(word.mean || '—')}</span>
+              </div>
+              <div class="cv-expand-item">
+                <span class="cv-expand-label">Loại từ</span>
+                <span class="cv-expand-val"><span class="cv-type-badge">${escHtml(word.wordtype || '—')}</span></span>
+              </div>
+              ${word.example ? `
+              <div class="cv-expand-item cv-expand-item-full">
+                <span class="cv-expand-label">Ví dụ</span>
+                <span class="cv-expand-val" style="line-height:1.6;font-style:italic">${escHtml(word.example)}</span>
+                ${word.example_vi ? `<span class="cv-example-vi" style="font-style:normal;margin-top:2px">(${escHtml(word.example_vi)})</span>` : ''}
+              </div>` : ''}
+            </div>
+          </div>
+          ${showAddBtn ? `
+          <div class="cv-modal-footer">
+            <button class="cv-add-to-my-btn" id="cv-wd-add-btn" type="button">
+              ${addToMyIcon}
+              Thêm vào bộ từ của tôi
+            </button>
+          </div>` : ''}`;
+
+        wordDetailOverlay.classList.add('cv-tp-active');
+        document.body.style.overflow = 'hidden';
+
+        document.getElementById('cv-wd-close-btn').addEventListener('click', closeWordDetail);
+        document.getElementById('cv-wd-voice-btn').addEventListener('click', () => speak(word.word, lang));
+        document.getElementById('cv-wd-add-btn')?.addEventListener('click', () => {
+            closeWordDetail();
+            showTopicPickerToggle(word);
+        });
+    }
 
     /* ══════════════════════════════════════════════
        HELPER: getElementById shorthand
@@ -341,7 +574,7 @@
             const row = document.createElement('div');
             row.className = `cv-word-row${rem ? ' cv-word-remembered' : ''}`;
             row.id = `cv-row-${word.id}`;
-            row.innerHTML = buildWordRowHTML(word, rem, false);
+            row.innerHTML = buildWordRowHTML(word, rem, false, true);
 
             row.querySelectorAll('.cv-voice-btn').forEach(btn =>
                 btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, course.lang); }));
@@ -353,10 +586,10 @@
                 updateStats(topic.words);
             });
 
-            /* Click row → toggle expand panel */
+            /* Click row → mở word detail overlay */
             row.addEventListener('click', (e) => {
                 if (e.target.closest('button, label, input, a')) return;
-                row.classList.toggle('cv-word-row--open');
+                openWordDetailOverlay(word, true, course.lang);
             });
 
             container.appendChild(row);
@@ -625,7 +858,7 @@
             const row = document.createElement('div');
             row.className = `cv-word-row${rem ? ' cv-word-remembered' : ''}`;
             row.id = `cv-row-${word.id}`;
-            row.innerHTML = buildWordRowHTML(word, rem, true);
+            row.innerHTML = buildWordRowHTML(word, rem, true, false);
 
             row.querySelectorAll('.cv-voice-btn').forEach(btn =>
                 btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, topic.lang || 'en'); }));
@@ -654,22 +887,22 @@
                 }
             });
 
-            /* Click row → toggle expand panel */
+            /* Click row → mở word detail overlay */
             row.addEventListener('click', (e) => {
                 if (e.target.closest('button, label, input, a')) return;
-                row.classList.toggle('cv-word-row--open');
+                openWordDetailOverlay(word, false, topic.lang || 'en');
             });
-
-            container.appendChild(row);
         });
     }
 
     /* ══════════════════════════════════════════════
        BUILD WORD ROW HTML (shared)
     ══════════════════════════════════════════════ */
-    function buildWordRowHTML(word, rem, withActions) {
+    function buildWordRowHTML(word, rem, withActions, showAddBtn) {
         const voiceIconSm = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
         const voiceIconMd = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
+        const addToMyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>`;
+        const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"/></svg>`;
 
         /* Switch HTML — dùng lại cho cả desktop (.cv-switch-chk) và mobile custom actions */
         const switchHtml = (extraClass = '') => `
@@ -721,38 +954,9 @@
             </svg>
           </button>` : ''}
       </div>
-      <!-- ── EXPAND PANEL: hiển thị toàn bộ thông tin khi click row ── -->
-      <div class="cv-word-expand">
-        <div class="cv-expand-grid">
-          <div class="cv-expand-item">
-            <span class="cv-expand-label">Từ vựng</span>
-            <strong class="cv-expand-val cv-expand-word">${escHtml(word.word)}</strong>
-          </div>
-          <div class="cv-expand-item">
-            <span class="cv-expand-label">Phiên âm</span>
-            <span class="cv-expand-val cv-trans">${escHtml(word.transcription || '—')}</span>
-          </div>
-          <div class="cv-expand-item">
-            <span class="cv-expand-label">Voice</span>
-            <button class="cv-voice-btn cv-expand-voice" title="Nghe phát âm">
-              ${voiceIconMd}&thinsp;Nghe
-            </button>
-          </div>
-          <div class="cv-expand-item">
-            <span class="cv-expand-label">Nghĩa</span>
-            <span class="cv-expand-val cv-mean">${escHtml(word.mean || '—')}</span>
-          </div>
-          <div class="cv-expand-item">
-            <span class="cv-expand-label">Loại từ</span>
-            <span class="cv-expand-val"><span class="cv-type-badge">${escHtml(word.wordtype || '—')}</span></span>
-          </div>
-          <div class="cv-expand-item cv-expand-item-full">
-            <span class="cv-expand-label">Ví dụ</span>
-            ${escHtml(word.example || '—')}
-            ${word.example_vi ? `<span class="cv-example-vi"> (${escHtml(word.example_vi)})</span>` : ''}
-          </div>
-        </div>
-      </div>`;
+
+      `;
+
     }
 
     /* ══════════════════════════════════════════════

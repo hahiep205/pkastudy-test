@@ -69,32 +69,234 @@
 }
 
 /* ══════════════════════════════════════════════
-   EXPAND PANEL
+   EXPAND PANEL — now shown as overlay, not inline
+   (cv-word-expand kept as empty stub for safety)
 ══════════════════════════════════════════════ */
 .cv-word-expand {
-    grid-column: 1 / -1;
-    display: none;
-    padding: 14px 16px 12px;
+    display: none !important;
+}
+
+.cv-word-row--open .cv-row-chevron {
+    color: var(--blue, #1cb0f6);
+}
+
+.cv-word-row--open {
+    background: rgba(28, 176, 246, 0.03) !important;
+}
+
+/* ── "Thêm vào bộ từ của tôi" button ── */
+.cv-add-to-my-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--blue, #1cb0f6) 0%, #6c63ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s, transform .15s, box-shadow .15s;
+    box-shadow: 0 2px 8px rgba(28, 176, 246, .3);
+    letter-spacing: .01em;
+}
+
+.cv-add-to-my-btn:hover {
+    opacity: .88;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(28, 176, 246, .4);
+}
+
+/* ══════════════════════════════════════════════
+   TOPIC PICKER TOGGLE
+══════════════════════════════════════════════ */
+.cv-topic-picker-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 15, 62, .45);
+    backdrop-filter: blur(3px);
+    z-index: 9100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
+.cv-topic-picker-overlay.cv-tp-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.cv-topic-picker-box {
+    background: #fff;
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .18);
+    width: 100%;
+    max-width: 460px;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: translateY(20px) scale(.97);
+    transition: transform .22s ease;
+}
+
+.cv-topic-picker-overlay.cv-tp-active .cv-topic-picker-box {
+    transform: translateY(0) scale(1);
+}
+
+/* ── Topic list ── */
+.cv-tp-topic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 4px;
+}
+
+.cv-tp-topic-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1.5px solid var(--border-color, #eee);
+    transition: all .15s;
+    user-select: none;
+}
+
+.cv-tp-topic-item:hover {
+    border-color: var(--blue, #1cb0f6);
+    background: rgba(28, 176, 246, .05);
+}
+
+.cv-tp-topic-item.cv-tp-selected {
+    border-color: var(--blue, #1cb0f6);
+    background: rgba(28, 176, 246, .09);
+}
+
+.cv-tp-topic-emoji {
+    font-size: 1.3rem;
+    width: 36px;
+    height: 36px;
+    background: var(--bg-page, #f8f9fa);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cv-tp-topic-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cv-tp-topic-name {
+    font-weight: 700;
+    font-size: .875rem;
+    color: var(--dark-blue);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cv-tp-topic-count {
+    font-size: .73rem;
+    color: var(--gray-light);
+    margin-top: 1px;
+}
+
+.cv-tp-check {
+    color: var(--blue, #1cb0f6);
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.cv-tp-topic-item.cv-tp-selected .cv-tp-check {
+    opacity: 1;
+}
+
+/* ── "Tạo danh sách mới" row ── */
+.cv-tp-create-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1.5px dashed var(--border-color, #ddd);
+    color: var(--gray-light);
+    font-size: .85rem;
+    font-weight: 600;
+    transition: all .15s;
     margin-top: 8px;
-    background: linear-gradient(135deg, rgba(28, 176, 246, .04), rgba(108, 99, 255, .04));
-    border-top: 1px dashed var(--border-color, #eee);
+}
+
+.cv-tp-create-row:hover {
+    border-color: var(--blue, #1cb0f6);
+    color: var(--blue, #1cb0f6);
+    background: rgba(28, 176, 246, .04);
+}
+
+/* ── New name input (hidden by default) ── */
+.cv-tp-new-wrap {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 14px;
+    background: var(--bg-page, #f8f9fa);
+    border-radius: 10px;
+    border: 1.5px solid var(--border-color, #eee);
     animation: cv-expand-in .18s ease;
 }
 
-@keyframes cv-expand-in {
-    from {
-        opacity: 0;
-        transform: translateY(-6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.cv-tp-new-wrap.cv-tp-new-visible {
+    display: flex;
 }
 
-.cv-word-row--open .cv-word-expand {
-    display: block;
+/* ── Empty state ── */
+.cv-tp-empty {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--gray-light);
+}
+
+.cv-tp-empty p {
+    font-size: .875rem;
+    line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════════
+   TOAST NOTIFICATION
+══════════════════════════════════════════════ */
+.cv-toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--dark-blue, #1a1a2e);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-size: .84rem;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease;
+    white-space: nowrap;
+}
+
+.cv-toast.cv-toast-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 .cv-expand-grid {

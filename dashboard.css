@@ -3130,7 +3130,7 @@ button {
 .cv-voice-btn:hover {
     background: var(--primary, #6c63ff);
     color: #fff;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .cv-mean {
