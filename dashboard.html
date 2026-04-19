@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Dashboard | Pkastudy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <link rel="stylesheet" href="dashboard.css" />
+    <link rel="stylesheet" href="custom-courses.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-logo">
+            <a href="index.html"><img src="logo2.png" alt="Pkastudy" class="sidebar-logo-img" /></a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-link active" data-page="dashboard">
+                <span class="sidebar-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="19"
+                        height="19" fill="currentColor">
+                        <path
+                            d="M20 20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V11L1 11L11.3273 1.6115C11.7087 1.26475 12.2913 1.26475 12.6727 1.6115L23 11L20 11V20Z">
+                        </path>
+                    </svg></span>
+                <span class="sidebar-label">Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-link" data-page="courses">
+                <span class="sidebar-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="19"
+                        height="19" fill="currentColor">
+                        <path
+                            d="M2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM12 5V19H20V5H12ZM13 7H19V9H13V7ZM13 10H19V12H13V10Z">
+                        </path>
+                    </svg></span><span class="sidebar-label">Courses</span>
+            </a>
+            <a href="#" class="sidebar-link" data-page="games">
+                <span class="sidebar-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="19"
+                        height="19" fill="currentColor">
+                        <path
+                            d="M17 4C20.3137 4 23 6.68629 23 10V14C23 17.3137 20.3137 20 17 20H7C3.68629 20 1 17.3137 1 14V10C1 6.68629 3.68629 4 7 4H17ZM10 9H8V11H6V13H7.999L8 15H10L9.999 13H12V11H10V9ZM18 13H16V15H18V13ZM16 9H14V11H16V9Z">
+                        </path>
+                    </svg></span><span class="sidebar-label">Games</span>
+            </a>
+            <a href="#" class="sidebar-link" data-page="stats">
+                <span class="sidebar-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="19"
+                        height="19" fill="currentColor">
+                        <path
+                            d="M12 7.00002C16.4183 7.00002 20 10.5817 20 15C20 19.4183 16.4183 23 12 23C7.58172 23 4 19.4183 4 15C4 10.5817 7.58172 7.00002 12 7.00002ZM12 10.5L10.6775 13.1797L7.72025 13.6094L9.86012 15.6953L9.35497 18.6406L12 17.25L14.645 18.6406L14.1399 15.6953L16.2798 13.6094L13.3225 13.1797L12 10.5ZM13 1.99902L18 2.00002V5.00002L16.6366 6.13758C15.5305 5.55773 14.3025 5.17887 13.0011 5.04951L13 1.99902ZM11 1.99902L10.9997 5.04943C9.6984 5.17866 8.47046 5.55738 7.36441 6.13706L6 5.00002V2.00002L11 1.99902Z">
+                        </path>
+                    </svg></span><span class="sidebar-label">Stats</span>
+            </a>
+            <a href="#" class="sidebar-link" data-page="chatbot">
+                <span class="sidebar-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="19"
+                        height="19" fill="currentColor">
+                        <path
+                            d="M20.7134 8.12811L20.4668 8.69379C20.2864 9.10792 19.7136 9.10792 19.5331 8.69379L19.2866 8.12811C18.8471 7.11947 18.0555 6.31641 17.0677 5.87708L16.308 5.53922C15.8973 5.35653 15.8973 4.75881 16.308 4.57612L17.0252 4.25714C18.0384 3.80651 18.8442 2.97373 19.2761 1.93083L19.5293 1.31953C19.7058 0.893489 20.2942 0.893489 20.4706 1.31953L20.7238 1.93083C21.1558 2.97373 21.9616 3.80651 22.9748 4.25714L23.6919 4.57612C24.1027 4.75881 24.1027 5.35653 23.6919 5.53922L22.9323 5.87708C21.9445 6.31641 21.1529 7.11947 20.7134 8.12811ZM20 11C20.6695 11 21.3134 10.8903 21.9147 10.688C21.971 11.1174 22 11.5553 22 12C22 17.5228 17.5228 22 12 22C10.2975 22 8.6944 21.5746 7.29117 20.8242L2 22L3.17581 16.7088C2.42544 15.3056 2 13.7025 2 12C2 6.47715 6.47715 2 12 2C12.9056 2 13.7831 2.12039 14.6174 2.34603C14.2221 3.14617 14 4.04715 14 5C14 8.31371 16.6863 11 20 11ZM7 12C7 14.7614 9.23858 17 12 17C14.7614 17 17 14.7614 17 12H15C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12H7Z">
+                        </path>
+                    </svg></span><span class="sidebar-label">Chatbot AI</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-bottom">
+            <a href="#" class="sidebar-link" data-page="settings">
+                <span class="sidebar-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="19"
+                        height="19" fill="currentColor">
+                        <path
+                            d="M2.13127 13.6308C1.9492 12.5349 1.95521 11.434 2.13216 10.3695C3.23337 10.3963 4.22374 9.86798 4.60865 8.93871C4.99357 8.00944 4.66685 6.93557 3.86926 6.17581C4.49685 5.29798 5.27105 4.51528 6.17471 3.86911C6.9345 4.66716 8.0087 4.99416 8.93822 4.60914C9.86774 4.22412 10.3961 3.23332 10.369 2.13176C11.4649 1.94969 12.5658 1.9557 13.6303 2.13265C13.6036 3.23385 14.1319 4.22422 15.0612 4.60914C15.9904 4.99406 17.0643 4.66733 17.8241 3.86975C18.7019 4.49734 19.4846 5.27153 20.1308 6.1752C19.3327 6.93499 19.0057 8.00919 19.3907 8.93871C19.7757 9.86823 20.7665 10.3966 21.8681 10.3695C22.0502 11.4654 22.0442 12.5663 21.8672 13.6308C20.766 13.6041 19.7756 14.1324 19.3907 15.0616C19.0058 15.9909 19.3325 17.0648 20.1301 17.8245C19.5025 18.7024 18.7283 19.4851 17.8247 20.1312C17.0649 19.3332 15.9907 19.0062 15.0612 19.3912C14.1316 19.7762 13.6033 20.767 13.6303 21.8686C12.5344 22.0507 11.4335 22.0447 10.3691 21.8677C10.3958 20.7665 9.86749 19.7761 8.93822 19.3912C8.00895 19.0063 6.93508 19.333 6.17532 20.1306C5.29749 19.503 4.51479 18.7288 3.86862 17.8252C4.66667 17.0654 4.99367 15.9912 4.60865 15.0616C4.22363 14.1321 3.23284 13.6038 2.13127 13.6308ZM11.9997 15.0002C13.6565 15.0002 14.9997 13.657 14.9997 12.0002C14.9997 10.3433 13.6565 9.00018 11.9997 9.00018C10.3428 9.00018 8.99969 10.3433 8.99969 12.0002C8.99969 13.657 10.3428 15.0002 11.9997 15.0002Z">
+                        </path>
+                    </svg></span>
+                <span class="sidebar-label">Settings</span>
+            </a>
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">G</div>
+                <div class="sidebar-user-info">
+                    <strong>Guest User</strong>
+                    <span>Tài khoản khách</span>
+                </div>
+
+            </div>
+            <a href="index.html" onclick="logout()"><button class="btn btn-secondary" title="Đăng xuất">Đăng
+                    xuất</button></a>
+        </div>
+
+    </aside>
+
+    <!-- ══ MAIN WRAPPER ══ -->
+    <div class="main-wrapper">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+            <div class="topbar-logo" style="display: none;">
+                <a href="index.html"><img src="logo2.png" alt="Pkastudy" class="topbar-logo-img" /></a>
+            </div>
+
+            <div class="topbar-greeting">
+                <span>Xin chào, <strong>Guest User</strong>!</span>
+            </div>
+
+
+
+            <div class="topbar-actions">
+                <!-- Streak badge -->
+                <button class="topbar-streak" id="streakBtn" title="Streak hiện tại">
+                    <span class="streak-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M17.65 11.3C17.41 10.82 17.13 10.37 16.8 9.94C16.07 9.02 15.42 8.04 15.12 6.91C14.7 5.31 15.08 3.8 15.25 3C10.65 4.3 9 8.25 9 11.02C9 11.49 9.04 11.94 9.12 12.37C8.24 11.83 7.5 11.02 7 10C6.11 11.95 5.96 14.24 7.04 16.2C7.13 16.37 7.23 16.53 7.34 16.69C7.45 16.85 7.57 17.01 7.7 17.16C8.75 18.25 10.27 19 12 19C15.31 19 18 16.31 18 13C18 12.41 17.88 11.84 17.65 11.3Z"
+                                fill="#FF4500" />
+                            <path
+                                d="M12 17C13.6569 17 15 15.6569 15 14C15 12.82 14.31 11.81 13.32 11.33C13.41 11.01 13.47 10.67 13.47 10.32C13.47 9.17 12.8 8.18 11.84 7.71C10.27 8.35 9.5 10.15 9.5 11.84C9.5 12.13 9.52 12.4 9.57 12.67C9.23 12.44 8.94 12.14 8.72 11.81C8.21 12.98 8.14 14.36 8.76 15.54C9.42 16.45 10.64 17 12 17Z"
+                                fill="#FFD700" />
+                        </svg>
+                    </span>
+                    <strong id="streakCount">1</strong>&nbsp;
+                </button>
+                <button id="dashboardChatBtn" class="topbar-chatbot" title="Mở trợ lý AI">
+                    <img src="ai.png" alt="AI Chatbot" class="topbar-chatbot-img">
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="dash-main" id="page-dashboard">
+
+            <!-- ── WELCOME BANNER ── -->
+            <section class="welcome-banner reveal">
+                <div class="welcome-text">
+                    <div class="welcome-eyebrow" id="dash-today-label">Đang tải...</div>
+                    <h1 class="welcome-title">Tiếp tục hành trình học từ vựng!</h1>
+                    <p class="welcome-sub">Bạn đã thuộc <strong id="dash-total-remembered">0</strong> từ vựng trên tổng
+                        <strong id="dash-total-words">0</strong> từ. Cố lên nào! 💪
+                    </p>
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary btn-large" id="startStudyBtn">Khóa học</button>
+                        <button class="btn btn-secondary">Trò chơi</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── GRID: CHART + TODAY ── -->
+            <div class="mid-grid">
+
+                <!-- Weekly Chart -->
+                <div class="chart-card reveal">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-eyebrow">Hoạt động</div>
+                            <h2 class="card-title-text">Tuần này</h2>
+                        </div>
+                        <div class="chart-tabs">
+                            <button class="chart-tab active" data-period="week">Tuần</button>
+                            <button class="chart-tab" data-period="month">Tháng</button>
+                        </div>
+                    </div>
+                    <div class="chart-area" id="chartArea">
+                        <canvas id="activityChart" height="160"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <span class="legend-dot" style="background:var(--green)"></span> Từ đã nhớ
+                        <span class="legend-dot" style="background:var(--blue);margin-left:16px"></span> Từ đã học
+                    </div>
+                </div>
+
+                <!-- Today's Tasks -->
+                <div class="today-card reveal">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-eyebrow">Hôm nay</div>
+                            <h2 class="card-title-text">Mục tiêu ngày</h2>
+                        </div>
+                        <span class="badge badge-streak">1/5 Task hoàn thành</span>
+                    </div>
+
+                    <div class="task-list">
+                        <div class="task-item done">
+                            <span class="task-check">✓</span>
+                            <div class="task-info">
+                                <strong>Ghé thăm pkastudy</strong>
+                                <span>Đã truy cập thành công!</span>
+                            </div>
+                            <span class="badge badge-completed">Xong</span>
+                        </div>
+                        <div class="task-item active">
+                            <span class="task-check pending">○</span>
+                            <div class="task-info">
+                                <strong>Truy cập pkastudy languages</strong>
+                                <span>Vào trang học tập</span>
+                            </div>
+                            <button class="btn btn-primary btn-small">Hoàn thành</button>
+                        </div>
+                        <div class="task-item">
+                            <span class="task-check pending">○</span>
+                            <div class="task-info">
+                                <strong>Chơi lật thẻ Flashcard</strong>
+                                <span>Game · 5 phút</span>
+                            </div>
+                            <button class="btn btn-primary btn-small">Bắt đầu</button>
+                        </div>
+                        <div class="task-item">
+                            <span class="task-check pending">○</span>
+                            <div class="task-info">
+                                <strong>Listening Challenge</strong>
+                                <span>Listening · ~12 phút</span>
+                            </div>
+                            <button class="btn btn-primary btn-small">Bắt đầu</button>
+                        </div>
+                        <div class="task-item">
+                            <span class="task-check pending">○</span>
+                            <div class="task-info">
+                                <strong>Typing Challenge</strong>
+                                <span>Typing · ~18 phút</span>
+                            </div>
+                            <button class="btn btn-primary btn-small">Bắt đầu</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ── COURSES ROW ── -->
+            <section class="courses-section">
+                <div class="section-header-dash">
+                    <div>
+                        <div class="card-eyebrow">Module</div>
+                        <h2 class="card-title-text">Các tài liệu của pkastudy</h2>
+                    </div>
+                </div>
+
+                <div class="courses-grid-dash">
+
+                    <!-- Course 1: TOEIC -->
+                    <div class="course-dash-card reveal" data-course-id="toeic-basic">
+                        <div class="course-dash-top" style="background:linear-gradient(135deg,#eef2ff,#e0e7ff)">
+                            <span class="course-flag">Tiếng Anh</span>
+                            <span class="badge badge-progress">TOEIC</span>
+                        </div>
+                        <div class="course-dash-body">
+                            <div class="course-dash-tag tag-popular">Phổ biến nhất</div>
+                            <h3 class="course-dash-name">Bộ từ vựng TOEIC cơ bản từ 0 tới 500+</h3>
+                            <p class="course-dash-desc">Bộ từ vựng cốt lõi cho kỳ thi TOEIC từ 0 - 500 điểm.</p>
+                            <div class="course-dash-meta">
+                                <span class="cd-meta-words">50 từ</span>
+                                <span class="cd-meta-topics">5 chủ đề</span>
+                                <span>Level A1</span>
+                            </div>
+                            <div class="course-progress-section">
+                                <div class="course-progress-header">
+                                    <span>Tiến độ</span>
+                                    <span><strong class="cd-done">0</strong> / <strong class="cd-total">50</strong> từ ·
+                                        <strong class="cd-pct" id="p1">0%</strong></span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill course-fill" data-width="0"
+                                        style="background:var(--blue);width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="course-dash-footer">
+                            <button class="btn btn-primary btn-small cd-view-btn">Xem ngay</button>
+                        </div>
+                    </div>
+
+                    <!-- Course 2: TOPIK1 -->
+                    <div class="course-dash-card reveal" style="transition-delay:80ms" data-course-id="topik1-basic">
+                        <div class="course-dash-top" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7)">
+                            <span class="course-flag">Tiếng Hàn</span>
+                            <span class="badge badge-review">TOPIK</span>
+                        </div>
+                        <div class="course-dash-body">
+                            <div class="course-dash-tag tag-new">Mới cập nhật</div>
+                            <h3 class="course-dash-name">Bộ từ vựng TOPIK 1 dành cho người mới</h3>
+                            <p class="course-dash-desc">Hangul, giao tiếp hàng ngày và từ vựng TOPIK I.</p>
+                            <div class="course-dash-meta">
+                                <span class="cd-meta-words">50 từ</span>
+                                <span class="cd-meta-topics">5 chủ đề</span>
+                                <span>Level A1</span>
+                            </div>
+                            <div class="course-progress-section">
+                                <div class="course-progress-header">
+                                    <span>Tiến độ</span>
+                                    <span><strong class="cd-done">0</strong> / <strong class="cd-total">50</strong> từ ·
+                                        <strong class="cd-pct" id="p2">0%</strong></span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill course-fill" data-width="0"
+                                        style="background:var(--green);width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="course-dash-footer">
+                            <button class="btn btn-primary btn-small cd-view-btn">Xem ngay</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+
+        <main class="dash-main courses-page" id="page-courses" style="display:none">
+
+            <!-- ── BANNER ── -->
+            <section class="courses-banner reveal">
+                <div class="courses-banner-text">
+                    <div class="welcome-eyebrow">Thư viện tài liệu</div>
+                    <h1 class="welcome-title">Học ngoại ngữ cùng pkastudy!</h1>
+                    <p class="welcome-sub">Chọn ngôn ngữ bạn muốn học và khám phá các tài liệu được tuyển chọn kỹ lưỡng.
+                    </p>
+                </div>
+                <div class="courses-banner-badges">
+                    <div class="courses-stat-pill">
+                        <span class="courses-stat-num">2</span>
+                        <span class="courses-stat-label">Ngôn ngữ</span>
+                    </div>
+                    <div class="courses-stat-pill">
+                        <span class="courses-stat-num">2</span>
+                        <span class="courses-stat-label">Bộ tài liệu</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── LANGUAGE TABS ── -->
+            <div class="lang-tabs-wrapper">
+                <div class="lang-tabs">
+                    <button class="lang-tab-btn active" data-lang="english">
+                        <span class="lang-tab-name">Tiếng Anh</span>
+                        <span class="lang-tab-count">1 bộ tài liệu</span>
+                    </button>
+                    <button class="lang-tab-btn" data-lang="korean">
+                        <span class="lang-tab-name">Tiếng Hàn</span>
+                        <span class="lang-tab-count">1 bộ tài liệu</span>
+                    </button>
+                    <button class="lang-tab-btn" data-lang="custom">
+                        <span class="lang-tab-name">Tài liệu của bạn</span>
+                        <span class="lang-tab-count" id="cv-custom-tab-count">0 chủ đề</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── TIẾNG ANH ── -->
+            <div class="lang-content" id="lang-english">
+                <div class="lang-content-header">
+                    <div>
+                        <div class="card-eyebrow">Tiếng Anh</div>
+                        <h2 class="card-title-text">Tài liệu học tập</h2>
+                    </div>
+                    <span class="badge badge-progress">1 bộ tài liệu</span>
+                </div>
+
+                <div class="doc-list">
+
+                    <!-- Doc 1 -->
+                    <div class="doc-card reveal" style="--delay:0ms" data-course-id="toeic-basic">
+                        <div class="doc-icon-wrap doc-icon-blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"
+                                fill="currentColor">
+                                <path
+                                    d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 21.0082V7L15 2H3.9985ZM10.4999 7.5C10.4999 9.70914 8.70914 11.5 6.49999 11.5V13.5C9.81371 13.5 12.4999 10.8137 12.4999 7.5H10.4999ZM7.5 7.5H5.5C5.5 9.70914 7.29086 11.5 9.5 11.5V9.5C8.39543 9.5 7.5 8.60457 7.5 7.5Z" />
+                            </svg>
+                        </div>
+                        <div class="doc-info">
+                            <div class="doc-meta-row">
+                                <span class="doc-type-badge type-pdf">TOEIC</span>
+                            </div>
+                            <h3 class="doc-name">1. Bộ từ vựng TOEIC cơ bản từ 0 tới 500+</h3>
+                            <p class="doc-desc">Bộ 600 từ vựng cốt lõi được phân loại theo chủ đề: văn phòng, tài chính,
+                                du lịch, sức khoẻ và hơn thế nữa.</p>
+                            <div class="doc-tags">
+                                <span class="doc-tag">TOEIC</span>
+                                <span class="doc-tag">Cơ bản</span>
+                                <span class="doc-tag">Phổ biến</span>
+                            </div>
+                        </div>
+                        <div class="doc-action">
+                            <button class="btn btn-primary btn-small">Học ngay</button>
+                        </div>
+                    </div>
+
+                </div><!-- /doc-list -->
+            </div><!-- /lang-english -->
+
+            <!-- ── TIẾNG HÀN ── -->
+            <div class="lang-content" id="lang-korean" style="display:none">
+                <div class="lang-content-header">
+                    <div>
+                        <div class="card-eyebrow">Tiếng Hàn</div>
+                        <h2 class="card-title-text">Tài liệu học tập</h2>
+                    </div>
+                    <span class="badge badge-review">1 bộ tài liệu</span>
+                </div>
+
+                <div class="doc-list">
+
+                    <!-- Doc 1 -->
+                    <div class="doc-card reveal" style="--delay:0ms" data-course-id="topik1-basic">
+                        <div class="doc-icon-wrap doc-icon-pink">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"
+                                fill="currentColor">
+                                <path
+                                    d="M5 4H15V8H19V20H5V4ZM3.9985 2C3.44749 2 3 2.44405 3 2.9918V21.0082C3 21.5447 3.44476 22 3.9934 22H20.0066C20.5551 22 21 21.5489 21 21.0082V7L15 2H3.9985ZM10.4999 7.5C10.4999 9.70914 8.70914 11.5 6.49999 11.5V13.5C9.81371 13.5 12.4999 10.8137 12.4999 7.5H10.4999ZM7.5 7.5H5.5C5.5 9.70914 7.29086 11.5 9.5 11.5V9.5C8.39543 9.5 7.5 8.60457 7.5 7.5Z" />
+                            </svg>
+                        </div>
+                        <div class="doc-info">
+                            <div class="doc-meta-row">
+                                <span class="doc-type-badge type-pdf">TOPIK 1</span>
+                            </div>
+                            <h3 class="doc-name">1. Bộ từ vựng TOPIK 1 dành cho người mới</h3>
+                            <p class="doc-desc">Bộ 300 từ vựng cốt lõi được phân loại theo chủ đề: bản thân, gia đình,
+                                du lịch, sức khoẻ và hơn thế nữa.</p>
+                            <div class="doc-tags">
+                                <span class="doc-tag">Cơ bản</span>
+                                <span class="doc-tag">Mới bắt đầu</span>
+                            </div>
+                        </div>
+                        <div class="doc-action">
+                            <button class="btn btn-primary btn-small">Học ngay</button>
+                        </div>
+                    </div>
+
+                </div><!-- /doc-list -->
+            </div><!-- /lang-korean -->
+
+            <!-- ── TÀI LIỆU CỦA BẠN ── -->
+            <div class="lang-content" id="lang-custom" style="display:none">
+                <!-- Populated dynamically by courses-viewer.js -->
+            </div><!-- /lang-custom -->
+
+        </main><!-- /page-courses -->
+
+
+        <main class="dash-main games-page" id="page-games" style="display:none"></main>
+
+
+        <main class="dash-main stats-page" id="page-stats" style="display:none"></main>
+
+
+        <main class="dash-main settings-page" id="page-settings" style="display:none"></main>
+
+    </div>
+
+    <!-- ══ MOBILE BOTTOM NAV ══ -->
+    <nav class="mobile-nav">
+        <a href="#" class="mobile-nav-item active" data-page="dashboard">
+            <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                    fill="currentColor">
+                    <path
+                        d="M20 20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V11L1 11L11.3273 1.6115C11.7087 1.26475 12.2913 1.26475 12.6727 1.6115L23 11L20 11V20Z">
+                    </path>
+                </svg></span>Tổng quan
+        </a>
+        <a href="#" class="mobile-nav-item" data-page="courses">
+            <span></span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                fill="currentColor">
+                <path
+                    d="M2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM12 5V19H20V5H12ZM13 7H19V9H13V7ZM13 10H19V12H13V10Z">
+                </path>
+            </svg>Khóa học</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-page="games">
+            <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                    fill="currentColor">
+                    <path
+                        d="M17 4C20.3137 4 23 6.68629 23 10V14C23 17.3137 20.3137 20 17 20H7C3.68629 20 1 17.3137 1 14V10C1 6.68629 3.68629 4 7 4H17ZM10 9H8V11H6V13H7.999L8 15H10L9.999 13H12V11H10V9ZM18 13H16V15H18V13ZM16 9H14V11H16V9Z">
+                    </path>
+                </svg></span>Trò chơi
+        </a>
+        <a href="#" class="mobile-nav-item" data-page="stats">
+            <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                    fill="currentColor">
+                    <path
+                        d="M12 7.00002C16.4183 7.00002 20 10.5817 20 15C20 19.4183 16.4183 23 12 23C7.58172 23 4 19.4183 4 15C4 10.5817 7.58172 7.00002 12 7.00002ZM12 10.5L10.6775 13.1797L7.72025 13.6094L9.86012 15.6953L9.35497 18.6406L12 17.25L14.645 18.6406L14.1399 15.6953L16.2798 13.6094L13.3225 13.1797L12 10.5ZM13 1.99902L18 2.00002V5.00002L16.6366 6.13758C15.5305 5.55773 14.3025 5.17887 13.0011 5.04951L13 1.99902ZM11 1.99902L10.9997 5.04943C9.6984 5.17866 8.47046 5.55738 7.36441 6.13706L6 5.00002V2.00002L11 1.99902Z">
+                    </path>
+                </svg></span>Xếp hạng
+        </a>
+        <a href="#" class="mobile-nav-item" data-page="settings">
+            <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+                    fill="currentColor">
+                    <path
+                        d="M2.13127 13.6308C1.9492 12.5349 1.95521 11.434 2.13216 10.3695C3.23337 10.3963 4.22374 9.86798 4.60865 8.93871C4.99357 8.00944 4.66685 6.93557 3.86926 6.17581C4.49685 5.29798 5.27105 4.51528 6.17471 3.86911C6.9345 4.66716 8.0087 4.99416 8.93822 4.60914C9.86774 4.22412 10.3961 3.23332 10.369 2.13176C11.4649 1.94969 12.5658 1.9557 13.6303 2.13265C13.6036 3.23385 14.1319 4.22422 15.0612 4.60914C15.9904 4.99406 17.0643 4.66733 17.8241 3.86975C18.7019 4.49734 19.4846 5.27153 20.1308 6.1752C19.3327 6.93499 19.0057 8.00919 19.3907 8.93871C19.7757 9.86823 20.7665 10.3966 21.8681 10.3695C22.0502 11.4654 22.0442 12.5663 21.8672 13.6308C20.766 13.6041 19.7756 14.1324 19.3907 15.0616C19.0058 15.9909 19.3325 17.0648 20.1301 17.8245C19.5025 18.7024 18.7283 19.4851 17.8247 20.1312C17.0649 19.3332 15.9907 19.0062 15.0612 19.3912C14.1316 19.7762 13.6033 20.767 13.6303 21.8686C12.5344 22.0507 11.4335 22.0447 10.3691 21.8677C10.3958 20.7665 9.86749 19.7761 8.93822 19.3912C8.00895 19.0063 6.93508 19.333 6.17532 20.1306C5.29749 19.503 4.51479 18.7288 3.86862 17.8252C4.66667 17.0654 4.99367 15.9912 4.60865 15.0616C4.22363 14.1321 3.23284 13.6038 2.13127 13.6308ZM11.9997 15.0002C13.6565 15.0002 14.9997 13.657 14.9997 12.0002C14.9997 10.3433 13.6565 9.00018 11.9997 9.00018C10.3428 9.00018 8.99969 10.3433 8.99969 12.0002C8.99969 13.657 10.3428 15.0002 11.9997 15.0002Z">
+                    </path>
+                </svg></span>Cài đặt
+        </a>
+    </nav>
+
+    <!-- ══ DASHBOARD CHATBOT WIDGET ══ -->
+    <div class="dashboard-chat-container">
+        <div id="dashboardChatWindow" class="dashboard-chat-window dashboard-chat-closed" aria-hidden="true">
+            <div class="dashboard-chat-header">
+                <div class="dashboard-chat-title">
+                    <div class="bot-avatar">
+                        <img src="ai.png" alt="Bot Avatar" class="bot-avatar-img">
+                    </div>
+                    Trợ lý AI của Pkastudy
+                </div>
+                <button id="dashboardChatClose" class="dashboard-chat-close">&times;</button>
+            </div>
+
+            <div id="dashboardChatMessages" class="dashboard-chat-messages">
+                <div class="dashboard-msg-bot">
+                    <span>Xin chào! Mình là trợ lý AI của PKA Study. Mình có thể giúp gì cho bạn hôm nay?</span>
+                </div>
+            </div>
+
+            <div class="dashboard-chat-footer">
+                <textarea id="dashboardChatInput" class="dashboard-input" placeholder="Hỏi từ vựng, ngữ pháp..."
+                    rows="1"></textarea>
+                <button id="dashboardChatSend" class="btn btn-primary btn-small dashboard-send-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SIDEBAR OVERLAY (mobile) ══ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <script src="dashboard.js"></script>
+    <script src="dashboard-chat.js"></script>
+    <script src="courses-data.js"></script>
+    <script src="courses-viewer.js"></script>
+</body>
+
+</html>

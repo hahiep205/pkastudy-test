@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pkastudy</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="chatbot.css">
+
+    <script src="script.js" defer></script>
+    <script src="floatchat.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="#"><img src="logo2.png" style="width: 179px; height: auto;" alt="pkastudy Logo"
+                    class="nav-logo"></a>
+        </div>
+
+        <!-- Hamburger Button (Mobile Menu Toggle) -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+        <!-- Mobile Menu Sidebar -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-header">
+                <a href="#"><img src="logo2.png" alt="pkastudy Logo" class="mobile-menu-logo"></a>
+                <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="mobile-menu-nav">
+                <a href="#" class="mobile-nav-link">Trang chủ</a>
+                <a href="#" class="mobile-nav-link">Giới thiệu</a>
+                <a href="#" class="mobile-nav-link">Khóa học</a>
+                <a href="#" class="mobile-nav-link">Lộ trình học</a>
+                <a href="#" class="mobile-nav-link">Chatbot AI</a>
+                <a href="#" class="mobile-nav-link">Từ điển</a>
+            </nav>
+
+            <div class="mobile-menu-actions">
+                <a href="login.html"><button class="btn btn-secondary btn-mobile-menu">Đăng nhập</button></a>
+                <a href="register.html"><button class="btn btn-primary btn-mobile-menu">Đăng ký</button></a>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="#" class="nav-link">Trang chủ</a>
+            <a href="#" class="nav-link">Giới thiệu</a>
+            <a href="#" class="nav-link">Khóa học</a>
+            <a href="#" class="nav-link">Lộ trình học</a>
+            <a href="#" class="nav-link">Chatbot AI</a>
+            <a href="#" class="nav-link">Từ điển</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="login.html"><button class="btn btn-nav btn-secondary" style="max-height: 38px; width: auto;">Đăng
+                    nhập</button></a>
+            <a href="register.html"><button class="btn btn-nav btn-primary" style="max-height: 38px; width: auto;">Đăng
+                    ký</button></a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>study languages</h1>
+        <p>Nền tảng học tiếng Anh - Hàn toàn diện với từ vựng phong phú, phát âm chuẩn,
+            luyện nghe hiệu quả, flashcard sinh động và trợ lý AI thông minh.</p>
+        <div class="hero-buttons">
+            <a href="dashboard.html"><button class="btn btn-primary" id="btn-get-started">Bắt đầu ngay</button></a>
+            <a href="login.html"><button class="btn btn-secondary">Đã có tài khoản</button></a>
+        </div>
+    </header>
+
+    <main>
+
+
+
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+
+            <div class="footer-col col-brand">
+                <a href="#"><img src="logo2.png" style="width: 270px; height: auto;" alt="pkastudy Logo"
+                        class="footer-logo"></a>
+                <p class="footer-desc">Nền tảng học tiếng Anh - Hàn toàn diện với từ vựng phong phú, phát âm chuẩn,
+                    luyện nghe hiệu quả, flashcard sinh động và trợ lý AI thông minh.</p>
+            </div>
+
+            <div class="footer-col col-links">
+                <h3 class="footer-heading">Danh mục</h3>
+                <ul class="footer-list">
+                    <li><a href="#" class="footer-link">Trang chủ</a></li>
+                    <li><a href="#" class="footer-link">Giới thiệu</a></li>
+                    <li><a href="#" class="footer-link">Khóa học</a></li>
+                    <li><a href="#" class="footer-link">Lộ trình học</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col col-links">
+                <h3 class="footer-heading">Dịch Vụ</h3>
+                <ul class="footer-list">
+                    <li><a href="#" class="footer-link">Học Tiếng Anh</a></li>
+                    <li><a href="#" class="footer-link">Học Tiếng Hàn</a></li>
+                    <li><a href="#" class="footer-link">Chatbot AI</a></li>
+                    <li><a href="#" class="footer-link">Từ Điển</a></li>
+                    <li><a href="dashboard.html" class="footer-link">Học Thử</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col col-map">
+                <h3 class="footer-heading">Địa Chỉ</h3>
+                <div class="map-wrapper">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3541.401605565887!2d105.7461114750295!3d20.962611180670255!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313452efff394ce3%3A0x391a39d4325be464!2zVHLGsOG7nW5nIMSQ4bqhaSBI4buNYyBQaGVuaWthYQ!5e1!3m2!1svi!2s!4v1776373716545!5m2!1svi!2s"
+                        style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-bottom-divider"></div>
+            <p>© 2026 pkastudy. All rights reserved.</p>
+        </div>
+
+    </footer>
+
+    <div class="float-chat-container">
+
+        <div id="floatChatWindow" class="float-chat-window float-chat-closed" aria-hidden="true">
+            <div class="float-chat-header">
+                <div class="float-chat-title">
+                    <div class="bot-avatar">
+                        <img src="ai.png" alt="Bot Avatar" class="bot-avatar-img">
+                    </div>
+                    Trợ lý AI của Pkastudy
+                </div>
+                <button id="floatChatClose" class="float-chat-close">&times;</button>
+            </div>
+
+            <div id="floatChatMessages" class="float-chat-messages">
+                <div class="float-msg float-msg-bot">
+                    <span>Xin chào! Mình là trợ lý AI của PKA Study. Mình có thể giúp gì cho bạn hôm nay?</span>
+                </div>
+            </div>
+
+            <div class="float-chat-footer">
+                <textarea id="floatChatInput" class="custom-input float-input" placeholder="Hỏi từ vựng, ngữ pháp..."
+                    rows="1"></textarea>
+                <button id="floatChatSend" class="btn btn-primary btn-small float-send-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <button id="floatChatBtn" class="float-chat-btn">
+            <img src="ai.png" alt="Chatbot Icon" class="float-chat-icon">
+        </button>
+    </div>
+
+</body>
+
+</html>
