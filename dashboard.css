@@ -2870,7 +2870,7 @@ button {
 
 /* Flashcard — xanh dương */
 .cv-mode-card[data-mode="flashcard"] {
-    background: linear-gradient(145deg, #76b4fd, #93c5fd);
+    background: linear-gradient(145deg, #3b9ffc, #60b8fc);
     border-color: #60a5fa;
 }
 
@@ -2886,7 +2886,7 @@ button {
 
 /* Trắc nghiệm — tím */
 .cv-mode-card[data-mode="quiz"] {
-    background: linear-gradient(145deg, #b09efd, #c4b5fd);
+    background: linear-gradient(145deg, #8b6ffc, #a98ffd);
     border-color: #a78bfa;
 }
 
@@ -2902,7 +2902,7 @@ button {
 
 /* Điền từ — xanh lá */
 .cv-mode-card[data-mode="typing"] {
-    background: linear-gradient(145deg, #6bec97, #86efac);
+    background: linear-gradient(145deg, #22d46b, #4de88a);
     border-color: #4ade80;
 }
 
@@ -2918,7 +2918,7 @@ button {
 
 /* Ghép đôi — cam */
 .cv-mode-card[data-mode="match"] {
-    background: linear-gradient(145deg, #fda95d, #fdba74);
+    background: linear-gradient(145deg, #f97316, #fb9a3e);
     border-color: #fb923c;
 }
 
@@ -2934,7 +2934,7 @@ button {
 
 /* Nghe & Chọn — hồng đỏ */
 .cv-mode-card[data-mode="listen"] {
-    background: linear-gradient(145deg, #fd8d9b, #fda4af);
+    background: linear-gradient(145deg, #f4305a, #f75f7e);
     border-color: #fb7185;
 }
 
