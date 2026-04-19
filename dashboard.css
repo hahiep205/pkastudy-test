@@ -1331,11 +1331,15 @@ button {
     }
 
     .topbar-hamburger {
-        display: none;
+        display: flex;
     }
 
     .topbar-greeting {
         display: none;
+    }
+
+    .topbar-logo {
+        display: flex !important;
     }
 
     .topbar {
@@ -2858,6 +2862,101 @@ button {
     padding: 2px 7px;
     border-radius: 999px;
     margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════
+   CV MODE CARD — GRADIENT THEO TỪNG MODE
+══════════════════════════════════════════ */
+
+/* Flashcard — xanh dương */
+.cv-mode-card[data-mode="flashcard"] {
+    background: linear-gradient(145deg, #76b4fd, #93c5fd);
+    border-color: #60a5fa;
+}
+
+.cv-mode-card[data-mode="flashcard"]:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+}
+
+.cv-mode-card[data-mode="flashcard"].active {
+    background: linear-gradient(145deg, #3b82f6, #2563eb);
+    border-color: #2563eb;
+}
+
+/* Trắc nghiệm — tím */
+.cv-mode-card[data-mode="quiz"] {
+    background: linear-gradient(145deg, #b09efd, #c4b5fd);
+    border-color: #a78bfa;
+}
+
+.cv-mode-card[data-mode="quiz"]:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);
+}
+
+.cv-mode-card[data-mode="quiz"].active {
+    background: linear-gradient(145deg, #8b5cf6, #7c3aed);
+    border-color: #7c3aed;
+}
+
+/* Điền từ — xanh lá */
+.cv-mode-card[data-mode="typing"] {
+    background: linear-gradient(145deg, #6bec97, #86efac);
+    border-color: #4ade80;
+}
+
+.cv-mode-card[data-mode="typing"]:hover {
+    border-color: #16a34a;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.25);
+}
+
+.cv-mode-card[data-mode="typing"].active {
+    background: linear-gradient(145deg, #22c55e, #16a34a);
+    border-color: #16a34a;
+}
+
+/* Ghép đôi — cam */
+.cv-mode-card[data-mode="match"] {
+    background: linear-gradient(145deg, #fda95d, #fdba74);
+    border-color: #fb923c;
+}
+
+.cv-mode-card[data-mode="match"]:hover {
+    border-color: #ea580c;
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.25);
+}
+
+.cv-mode-card[data-mode="match"].active {
+    background: linear-gradient(145deg, #f97316, #ea580c);
+    border-color: #ea580c;
+}
+
+/* Nghe & Chọn — hồng đỏ */
+.cv-mode-card[data-mode="listen"] {
+    background: linear-gradient(145deg, #fd8d9b, #fda4af);
+    border-color: #fb7185;
+}
+
+.cv-mode-card[data-mode="listen"]:hover {
+    border-color: #e11d48;
+    box-shadow: 0 4px 20px rgba(244, 63, 94, 0.25);
+}
+
+.cv-mode-card[data-mode="listen"].active {
+    background: linear-gradient(145deg, #f43f5e, #e11d48);
+    border-color: #e11d48;
+}
+
+/* ── Active state chung: text trắng ── */
+.cv-mode-card[data-mode].active .cv-mode-card-name,
+.cv-mode-card[data-mode].active .cv-mode-card-desc {
+    color: #fff;
+}
+
+.cv-mode-card[data-mode].active .cv-soon-badge {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
 }
 
 /* ── MODE AREA (coming soon) ── */

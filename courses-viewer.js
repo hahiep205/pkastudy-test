@@ -188,7 +188,11 @@
     function showSubView(which) {
         Array.from(coursePage.children).forEach(el => {
             if (el === topicsView || el === wordsView) return;
-            el.style.display = (which === 'home') ? '' : 'none';
+            if (which === 'home') {
+                el.style.display = el.classList.contains('lang-content') ? 'block' : '';
+            } else {
+                el.style.display = 'none';
+            }
         });
         topicsView.classList.toggle('cv-hidden', which !== 'topics');
         wordsView.classList.toggle('cv-hidden', which !== 'words');
@@ -507,6 +511,28 @@
     }
 
     window.pkaRenderCustomPanel = renderCustomPanel;
+
+    // Reset courses page về màn hình danh sách (home)
+    window.pkaCoursesHome = function () {
+        currentCourse = null;
+        currentTopic = null;
+        isCustomMode = false;
+        currentCustomTopicId = null;
+        showSubView('home');
+
+        // Bỏ active khỏi tất cả lang-tab-btn
+        document.querySelectorAll('.lang-tab-btn').forEach(function (btn) {
+            btn.classList.remove('active');
+        });
+
+        // Hiện tất cả lang-content
+        document.querySelectorAll('.lang-content').forEach(function (panel) {
+            panel.style.display = 'block';
+        });
+
+        // Render nội dung custom panel
+        renderCustomPanel();
+    };
 
     /* ── Build a custom topic card DOM element ── */
     function buildCustomTopicCard(topic) {
@@ -1082,7 +1108,7 @@ Mỗi phần tử trong array là một object với đúng 6 trường:
         let text = data.choices?.[0]?.message?.content || '';
         text = text.replace(/```json[\s\S]*?```/g, m => m.replace(/```json|```/g, '')).replace(/```/g, '').trim();
         const match = text.match(/\[[\s\S]*\]/);
-        if (!match) throw new Error('AI không trả về JSON hợp lệ');
+        if (!match) throw new Error('Hãy thử lại sau vài giây~');
         return JSON.parse(match[0]);
     }
 
@@ -1114,7 +1140,7 @@ Mỗi phần tử trong array là một object với đúng 6 trường:
       </div>
       <div class="cv-ai-preview-table">
         <div class="cv-ai-preview-head">
-          <span></span><span>Từ vựng</span><span>Nghĩa</span><span>Loại từ</span><span>Ví dụ</span>
+          <span></span><span>Từ vựng</span><span>Nghĩa</span>
         </div>
         <div class="cv-ai-preview-rows">${rows}</div>
       </div>`;

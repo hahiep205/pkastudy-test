@@ -311,15 +311,15 @@
                     <div class="course-dash-card reveal" style="transition-delay:160ms">
                         <div class="course-dash-top" style="background:linear-gradient(135deg,#fdf4ff,#ede9fe)">
                             <span class="course-flag">Cá nhân</span>
-                            <span class="badge badge-premium">Cá nhân</span>
+                            <span class="badge badge-premium">Dùng riêng</span>
                         </div>
                         <div class="course-dash-body">
                             <div class="course-dash-tag tag-super">Tự tạo</div>
                             <h3 class="course-dash-name">Tài liệu của bạn</h3>
                             <p class="course-dash-desc">Bộ từ vựng do bạn tự thêm và quản lý cá nhân.</p>
                             <div class="course-dash-meta">
-                                <span class="cd-meta-words-custom">-từ</span>
-                                <span class="cd-meta-topics-custom">-chủ đề</span>
+                                <span class="cd-meta-words-custom">— từ</span>
+                                <span class="cd-meta-topics-custom">— chủ đề</span>
                             </div>
                             <div class="course-progress-section">
                                 <div class="course-progress-header">
@@ -383,7 +383,7 @@
                         <span class="lang-tab-count">1 bộ tài liệu</span>
                     </button>
                     <button class="lang-tab-btn" data-lang="custom">
-                        <span class="lang-tab-name">Tài liệu của bạn</span>
+                        <span class="lang-tab-name">Cá nhân</span>
                         <span class="lang-tab-count" id="cv-custom-tab-count">0 chủ đề</span>
                     </button>
                 </div>
@@ -473,7 +473,7 @@
             </div><!-- /lang-korean -->
 
             <!-- ── TÀI LIỆU CỦA BẠN ── -->
-            <div class="lang-content" id="lang-custom" style="display:none">
+            <div class="lang-content" id="lang-custom">
                 <!-- Populated dynamically by courses-viewer.js -->
             </div><!-- /lang-custom -->
 
@@ -496,7 +496,7 @@
                     </svg>
                 </div>
                 <h2 class="cs-title">Trò chơi ngôn ngữ</h2>
-                <p class="cs-sub">Tính năng trò chơi học từ vựng đang được phát triển. Sắp thôi -hãy chờ đón nhé! 🎮
+                <p class="cs-sub">Tính năng trò chơi học từ vựng đang được phát triển. Sắp thôi — hãy chờ đón nhé! 🎮
                 </p>
                 <div class="cs-features">
                     <div class="cs-feature-pill">
@@ -537,58 +537,168 @@
 
 
         <main class="dash-main stats-page" id="page-stats" style="display:none">
-            <div class="coming-soon-wrapper">
-                <div class="cs-badge green">
-                    <span class="cs-badge-dot"></span>
-                    Đang cập nhật
+
+            <!-- ── STATS HERO BANNER ── -->
+            <section class="stats-hero reveal">
+                <div class="stats-hero-left">
+                    <div class="stats-hero-eyebrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
+                            fill="currentColor">
+                            <path
+                                d="M12 7.00002C16.4183 7.00002 20 10.5817 20 15C20 19.4183 16.4183 23 12 23C7.58172 23 4 19.4183 4 15C4 10.5817 7.58172 7.00002 12 7.00002ZM12 10.5L10.6775 13.1797L7.72025 13.6094L9.86012 15.6953L9.35497 18.6406L12 17.25L14.645 18.6406L14.1399 15.6953L16.2798 13.6094L13.3225 13.1797L12 10.5ZM13 1.99902L18 2.00002V5.00002L16.6366 6.13758C15.5305 5.55773 14.3025 5.17887 13.0011 5.04951L13 1.99902ZM11 1.99902L10.9997 5.04943C9.6984 5.17866 8.47046 5.55738 7.36441 6.13706L6 5.00002V2.00002L11 1.99902Z" />
+                        </svg>
+                        Bảng xếp hạng tuần này
+                    </div>
+                    <h1 class="stats-hero-title">Thống kê &amp; Xếp hạng</h1>
+                    <p class="stats-hero-sub">Theo dõi tiến trình, so sánh với cộng đồng và vươn lên top 1!</p>
                 </div>
-                <div class="cs-icon-wrap green">
-                    <span class="cs-dot"></span>
-                    <span class="cs-dot"></span>
-                    <span class="cs-dot"></span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--green)">
-                        <path
-                            d="M12 7.00002C16.4183 7.00002 20 10.5817 20 15C20 19.4183 16.4183 23 12 23C7.58172 23 4 19.4183 4 15C4 10.5817 7.58172 7.00002 12 7.00002ZM12 10.5L10.6775 13.1797L7.72025 13.6094L9.86012 15.6953L9.35497 18.6406L12 17.25L14.645 18.6406L14.1399 15.6953L16.2798 13.6094L13.3225 13.1797L12 10.5ZM13 1.99902L18 2.00002V5.00002L16.6366 6.13758C15.5305 5.55773 14.3025 5.17887 13.0011 5.04951L13 1.99902ZM11 1.99902L10.9997 5.04943C9.6984 5.17866 8.47046 5.55738 7.36441 6.13706L6 5.00002V2.00002L11 1.99902Z" />
-                    </svg>
-                </div>
-                <h2 class="cs-title">Thống kê &amp; Xếp hạng</h2>
-                <p class="cs-sub">Chúng mình đang xây dựng bảng thống kê học tập chi tiết và bảng xếp hạng người học.
-                    Theo dõi để không bỏ lỡ! 📊</p>
-                <div class="cs-features">
-                    <div class="cs-feature-pill">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
-                            fill="var(--green)">
-                            <path
-                                d="M3 3H21V21H3V3ZM5 5V19H19V5H5ZM7 15H9V17H7V15ZM7 11H9V14H7V11ZM7 7H9V10H7V7ZM11 15H13V17H11V15ZM11 11H13V14H11V11ZM11 9H13V10H11V9ZM15 15H17V17H15V15ZM15 13H17V14H15V13ZM15 7H17V12H15V7Z" />
-                        </svg>
-                        Thống kê từ vựng
+                <div class="stats-summary-pills">
+                    <div class="stats-sum-pill">
+                        <div class="stats-sum-icon orange">🔥</div>
+                        <div>
+                            <div class="stats-sum-val">24</div>
+                            <div class="stats-sum-label">Streak cao nhất</div>
+                        </div>
                     </div>
-                    <div class="cs-feature-pill">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
-                            fill="var(--golden)">
-                            <path
-                                d="M16 11C17.66 11 18.99 9.66 18.99 8C18.99 6.34 17.66 5 16 5C14.34 5 13 6.34 13 8C13 9.66 14.34 11 16 11ZM8 11C9.66 11 10.99 9.66 10.99 8C10.99 6.34 9.66 5 8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11ZM8 13C5.67 13 1 14.17 1 16.5V19H15V16.5C15 14.17 10.33 13 8 13ZM16 13C15.71 13 15.38 13.02 15.03 13.05C16.19 13.89 17 15.02 17 16.5V19H23V16.5C23 14.17 18.33 13 16 13Z" />
-                        </svg>
-                        Bảng xếp hạng
-                    </div>
-                    <div class="cs-feature-pill">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
-                            fill="var(--blue)">
-                            <path
-                                d="M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z" />
-                        </svg>
-                        Chuỗi ngày học
-                    </div>
-                    <div class="cs-feature-pill">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
-                            fill="var(--orange)">
-                            <path
-                                d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V10H9V17ZM13 17H11V7H13V17ZM17 17H15V13H17V17Z" />
-                        </svg>
-                        Tiến độ khóa học
+                    <div class="stats-sum-pill">
+                        <div class="stats-sum-icon blue">✅</div>
+                        <div>
+                            <div class="stats-sum-val">312</div>
+                            <div class="stats-sum-label">Task hoàn thành</div>
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- ── TOP ROW: STREAK + TASK ── -->
+            <div class="stats-grid-2">
+
+                <!-- BXH Streak -->
+                <div class="lb-card reveal"
+                    style="--lb-accent:#FF9600;--lb-bg:rgba(255,150,0,.07);--lb-border:rgba(255,150,0,.2)">
+                    <div class="lb-header">
+                        <div class="lb-icon-wrap" style="background:rgba(255,150,0,.12)">
+                            🔥
+                        </div>
+                        <div class="lb-header-text">
+                            <div class="lb-title">Streak</div>
+                            <div class="lb-subtitle">Chuỗi ngày học liên tiếp</div>
+                        </div>
+                        <span class="lb-badge" style="color:#FF9600;background:rgba(255,150,0,.12)">ngày</span>
+                    </div>
+                    <div class="lb-podium">
+                        <div class="lb-podium-item second">
+                            <div class="lb-podium-avatar" style="background:linear-gradient(135deg,#94a3b8,#64748b)">A
+                            </div>
+                            <div class="lb-podium-rank">🥈</div>
+                            <div class="lb-podium-name">abc_minh</div>
+                            <div class="lb-podium-val">21</div>
+                        </div>
+                        <div class="lb-podium-item first">
+                            <div class="lb-podium-crown">👑</div>
+                            <div class="lb-podium-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">A
+                            </div>
+                            <div class="lb-podium-rank">🥇</div>
+                            <div class="lb-podium-name">abc_linh</div>
+                            <div class="lb-podium-val">24</div>
+                        </div>
+                        <div class="lb-podium-item third">
+                            <div class="lb-podium-avatar" style="background:linear-gradient(135deg,#cd7c4e,#a3593a)">A
+                            </div>
+                            <div class="lb-podium-rank">🥉</div>
+                            <div class="lb-podium-name">abc_tuan</div>
+                            <div class="lb-podium-val">18</div>
+                        </div>
+                    </div>
+                    <div class="lb-list">
+                        <div class="lb-row"><span class="lb-rank-num">4</span>
+                            <div class="lb-row-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">A
+                            </div><span class="lb-row-name">abc_hang</span><span class="lb-row-val"
+                                style="color:#FF9600">15 ngày</span>
+                        </div>
+                        <div class="lb-row"><span class="lb-rank-num">5</span>
+                            <div class="lb-row-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777)">A
+                            </div><span class="lb-row-name">abc_nam</span><span class="lb-row-val"
+                                style="color:#FF9600">13 ngày</span>
+                        </div>
+                        <div class="lb-row"><span class="lb-rank-num">6</span>
+                            <div class="lb-row-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">A
+                            </div><span class="lb-row-name">abc_phuong</span><span class="lb-row-val"
+                                style="color:#FF9600">11 ngày</span>
+                        </div>
+                        <div class="lb-row lb-row-me"><span class="lb-rank-num">—</span>
+                            <div class="lb-row-avatar"
+                                style="background:linear-gradient(135deg,var(--blue),var(--dark-blue))">G</div><span
+                                class="lb-row-name">Bạn <span class="lb-me-badge">Tôi</span></span><span
+                                class="lb-row-val" style="color:#FF9600">1 ngày</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BXH Task -->
+                <div class="lb-card reveal"
+                    style="--lb-accent:#1CB0F6;--lb-bg:rgba(28,176,246,.07);--lb-border:rgba(28,176,246,.2)">
+                    <div class="lb-header">
+                        <div class="lb-icon-wrap" style="background:rgba(28,176,246,.12)">
+                            ✅
+                        </div>
+                        <div class="lb-header-text">
+                            <div class="lb-title">Task</div>
+                            <div class="lb-subtitle">Số nhiệm vụ hoàn thành</div>
+                        </div>
+                        <span class="lb-badge" style="color:#1CB0F6;background:rgba(28,176,246,.12)">task</span>
+                    </div>
+                    <div class="lb-podium">
+                        <div class="lb-podium-item second">
+                            <div class="lb-podium-avatar" style="background:linear-gradient(135deg,#94a3b8,#64748b)">A
+                            </div>
+                            <div class="lb-podium-rank">🥈</div>
+                            <div class="lb-podium-name">abc_trang</div>
+                            <div class="lb-podium-val">287</div>
+                        </div>
+                        <div class="lb-podium-item first">
+                            <div class="lb-podium-crown">👑</div>
+                            <div class="lb-podium-avatar" style="background:linear-gradient(135deg,#38bdf8,#0284c7)">A
+                            </div>
+                            <div class="lb-podium-rank">🥇</div>
+                            <div class="lb-podium-name">abc_khoa</div>
+                            <div class="lb-podium-val">312</div>
+                        </div>
+                        <div class="lb-podium-item third">
+                            <div class="lb-podium-avatar" style="background:linear-gradient(135deg,#cd7c4e,#a3593a)">A
+                            </div>
+                            <div class="lb-podium-rank">🥉</div>
+                            <div class="lb-podium-name">abc_vy</div>
+                            <div class="lb-podium-val">241</div>
+                        </div>
+                    </div>
+                    <div class="lb-list">
+                        <div class="lb-row"><span class="lb-rank-num">4</span>
+                            <div class="lb-row-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c)">A
+                            </div><span class="lb-row-name">abc_dung</span><span class="lb-row-val"
+                                style="color:#1CB0F6">198 task</span>
+                        </div>
+                        <div class="lb-row"><span class="lb-rank-num">5</span>
+                            <div class="lb-row-avatar" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">A
+                            </div><span class="lb-row-name">abc_hieu</span><span class="lb-row-val"
+                                style="color:#1CB0F6">175 task</span>
+                        </div>
+                        <div class="lb-row"><span class="lb-rank-num">6</span>
+                            <div class="lb-row-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777)">A
+                            </div><span class="lb-row-name">abc_lan</span><span class="lb-row-val"
+                                style="color:#1CB0F6">152 task</span>
+                        </div>
+                        <div class="lb-row lb-row-me"><span class="lb-rank-num">—</span>
+                            <div class="lb-row-avatar"
+                                style="background:linear-gradient(135deg,var(--blue),var(--dark-blue))">G</div><span
+                                class="lb-row-name">Bạn <span class="lb-me-badge">Tôi</span></span><span
+                                class="lb-row-val" style="color:#1CB0F6">0 task</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
         </main>
 
 
@@ -690,7 +800,7 @@
                         <path
                             d="M20 20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V11L1 11L11.3273 1.6115C11.7087 1.26475 12.2913 1.26475 12.6727 1.6115L23 11L20 11V20Z" />
                     </svg>
-                    Trang chủ
+                    Về trang chủ
                 </button>
                 <button class="btn btn-logout" onclick="logout && logout(); window.location.href='index.html'">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
@@ -731,7 +841,7 @@
                                     <path
                                         d="M2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12ZM11 11V17H13V11H11ZM11 7V9H13V7H11Z" />
                                 </svg>
-                                Góp ý
+                                💡 Góp ý
                             </button>
                             <button class="feedback-chip red" data-type="baoLoi" onclick="selectChip(this, true)">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"
@@ -739,7 +849,7 @@
                                     <path
                                         d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" />
                                 </svg>
-                                Báo lỗi
+                                🐛 Báo lỗi
                             </button>
                         </div>
                     </div>
@@ -906,7 +1016,7 @@
                     }, 2000);
                     return;
                 }
-                feedbackSubmitBtn.innerHTML = 'Đã gửi!';
+                feedbackSubmitBtn.innerHTML = '✅ Đã gửi! Cảm ơn bạn 💙';
                 feedbackSubmitBtn.style.background = 'var(--green)';
                 feedbackSubmitBtn.style.boxShadow = '0 4px 0 var(--green-shadow)';
                 document.getElementById('feedbackTitle').value = '';

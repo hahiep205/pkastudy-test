@@ -450,6 +450,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // Reset courses page về danh sách khi chuyển vào
+            if (targetPage === 'courses') {
+                // Reset inline style của tất cả lang-content ngay lập tức
+                document.querySelectorAll('.lang-content').forEach(function (panel) {
+                    panel.style.display = '';
+                });
+                // Bỏ active khỏi tất cả tab
+                document.querySelectorAll('.lang-tab-btn').forEach(function (btn) {
+                    btn.classList.remove('active');
+                });
+                // Gọi pkaCoursesHome nếu có (reset state nội bộ courses-viewer)
+                setTimeout(function () {
+                    if (typeof window.pkaCoursesHome === 'function') {
+                        window.pkaCoursesHome();
+                    }
+                }, 50);
+            }
+
             // Trigger reveal animation cho phần tử mới hiện ra
             setTimeout(function () {
                 var reveals = target.querySelectorAll('.reveal:not(.revealed)');
@@ -481,6 +499,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 var page = link.dataset.page;
                 switchPage(page);
+
+                // Refresh trang khi click từ mobile nav
+                if (link.classList.contains('mobile-nav-item')) {
+                    setTimeout(function () {
+                        if (page === 'dashboard') {
+                            if (window.COURSES_DATA) syncDashboardCourses();
+                        } else if (page === 'courses') {
+                            // Reset về màn hình danh sách tài liệu
+                            if (typeof window.pkaCoursesHome === 'function') {
+                                window.pkaCoursesHome();
+                            }
+                            var activeTab = document.querySelector('.lang-tab-btn.active');
+                            if (activeTab && activeTab.dataset.lang === 'custom') {
+                                if (typeof window.pkaRenderCustomPanel === 'function') {
+                                    window.pkaRenderCustomPanel();
+                                }
+                            }
+                        }
+                        // Reset reveal animation
+                        var target = document.getElementById('page-' + page);
+                        if (target) {
+                            target.querySelectorAll('.reveal').forEach(function (el) {
+                                el.classList.remove('revealed');
+                            });
+                            setTimeout(function () {
+                                target.querySelectorAll('.reveal:not(.revealed)').forEach(function (el) {
+                                    el.classList.add('revealed');
+                                });
+                            }, 50);
+                        }
+                    }, 50);
+                }
 
                 // Đóng sidebar mobile nếu đang mở
                 var sidebar = document.getElementById('sidebar');
@@ -660,7 +710,34 @@ document.addEventListener('DOMContentLoaded', () => {
         // Nút "Xem ngay" trên course card → chuyển sang page Courses
         document.querySelectorAll('.course-dash-card .cd-view-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
+                var card = btn.closest('.course-dash-card');
+                var courseId = card ? card.dataset.courseId : null;
+
                 switchPage('courses');
+
+                // Nếu là toeic-basic → tự động click tab Tiếng Anh
+                if (courseId === 'toeic-basic') {
+                    setTimeout(function () {
+                        var englishTab = document.querySelector('.lang-tab-btn[data-lang="english"]');
+                        if (englishTab) englishTab.click();
+                    }, 120);
+                }
+
+                // Nếu là topik1-basic → tự động click tab Tiếng Hàn
+                if (courseId === 'topik1-basic') {
+                    setTimeout(function () {
+                        var koreanTab = document.querySelector('.lang-tab-btn[data-lang="korean"]');
+                        if (koreanTab) koreanTab.click();
+                    }, 120);
+                }
+
+                // Nếu là custom → tự động click tab Tài liệu của bạn
+                if (courseId === 'custom') {
+                    setTimeout(function () {
+                        var customTab = document.querySelector('.lang-tab-btn[data-lang="custom"]');
+                        if (customTab) customTab.click();
+                    }, 120);
+                }
             });
         });
 
