@@ -774,7 +774,7 @@
 
     /* Ẩn header cột 7 (Hành động) — thay bằng label nhỏ hơn */
     .cv-custom-mode .cv-word-table-head span:nth-child(7) {
-        display: none;
+        display: flex;
     }
 
     /* Custom mode: hiện switch trong actions cell trên mobile */
@@ -869,4 +869,10 @@
         width: 100%;
         justify-content: center;
     }
+}
+
+.cv-example-vi {
+    color: var(--gray-text);
+    font-style: italic;
+    font-size: 0.88em;
 }

@@ -722,7 +722,8 @@
           </div>
           <div class="cv-expand-item cv-expand-item-full">
             <span class="cv-expand-label">Ví dụ</span>
-            <span class="cv-expand-val cv-example">${escHtml(word.example || '—')}</span>
+            ${escHtml(word.example || '—')}
+            ${word.example_vi ? `<span class="cv-example-vi"> (${escHtml(word.example_vi)})</span>` : ''}
           </div>
         </div>
       </div>`;
@@ -1061,8 +1062,8 @@
     async function callAIForWords(theme, lang, count) {
         const prompt = `Tạo ${count} từ vựng tiếng ${lang} về chủ đề: "${theme}".
 Yêu cầu: Trả về CHỈ một JSON array hợp lệ, không có markdown, không có backtick, không có chú thích.
-Mỗi phần tử trong array là một object với đúng 5 trường:
-{"word":"từ vựng tiếng ${lang}","transcription":"phiên âm IPA","mean":"nghĩa tiếng Việt","wordtype":"danh từ/động từ/tính từ/...","example":"câu ví dụ ngắn bằng tiếng ${lang}"}`;
+Mỗi phần tử trong array là một object với đúng 6 trường:
+{"word":"từ vựng tiếng ${lang}","transcription":"phiên âm IPA","mean":"nghĩa tiếng Việt","wordtype":"danh từ/động từ/tính từ/...","example":"câu ví dụ ngắn bằng tiếng ${lang}","example_vi":"bản dịch tiếng Việt của câu ví dụ"}`;
 
         const resp = await fetch(AI_API_URL, {
             method: 'POST',
