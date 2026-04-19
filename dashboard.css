@@ -2356,7 +2356,7 @@ button {
 
 .lang-tab-name {
     flex: 1;
-    text-align: left;
+    text-align: center;
 }
 
 .lang-tab-count {
@@ -2845,12 +2845,12 @@ button {
 .cv-mode-card-name {
     font-size: 0.82rem;
     font-weight: 800;
-    color: var(--text-primary, #1a1a2e);
+    color: #fff;
 }
 
 .cv-mode-card-desc {
     font-size: 0.7rem;
-    color: var(--text-secondary, #888);
+    color: #fff;
     line-height: 1.3;
 }
 
