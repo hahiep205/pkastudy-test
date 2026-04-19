@@ -94,26 +94,26 @@
         </button>
         <button class="cv-mode-card" data-mode="quiz">
           <div class="cv-mode-card-icon">❓</div>
-          <div class="cv-mode-card-name">Trắc nghiệm</div>
+          <div class="cv-mode-card-name">Quiz</div>
           <div class="cv-mode-card-desc">4 đáp án, chọn đúng</div>
           <span class="cv-soon-badge">Sắp có</span>
         </button>
         <button class="cv-mode-card" data-mode="typing">
           <div class="cv-mode-card-icon">⌨️</div>
-          <div class="cv-mode-card-name">Điền từ</div>
+          <div class="cv-mode-card-name">Typing</div>
           <div class="cv-mode-card-desc">Gõ từ vựng chính xác</div>
-          <span class="cv-soon-badge">Sắp có</span>
-        </button>
-        <button class="cv-mode-card" data-mode="match">
-          <div class="cv-mode-card-icon">🔗</div>
-          <div class="cv-mode-card-name">Ghép đôi</div>
-          <div class="cv-mode-card-desc">Nối từ với nghĩa đúng</div>
           <span class="cv-soon-badge">Sắp có</span>
         </button>
         <button class="cv-mode-card" data-mode="listen">
           <div class="cv-mode-card-icon">🎧</div>
-          <div class="cv-mode-card-name">Nghe & Chọn</div>
+          <div class="cv-mode-card-name">Listening</div>
           <div class="cv-mode-card-desc">Luyện kỹ năng nghe</div>
+          <span class="cv-soon-badge">Sắp có</span>
+        </button>
+        <button class="cv-mode-card" data-mode="match">
+          <div class="cv-mode-card-icon">🔗</div>
+          <div class="cv-mode-card-name">Match</div>
+          <div class="cv-mode-card-desc">Nối từ với nghĩa đúng</div>
           <span class="cv-soon-badge">Sắp có</span>
         </button>
       </div>

@@ -2814,6 +2814,9 @@ button {
     transition: all 0.2s;
     font-family: inherit;
     text-align: center;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
 }
 
 .cv-mode-card:hover {
@@ -2843,22 +2846,22 @@ button {
 }
 
 .cv-mode-card-name {
-    font-size: 0.82rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: #fff;
 }
 
 .cv-mode-card-desc {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     color: #fff;
     line-height: 1.3;
 }
 
 .cv-soon-badge {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    background: rgba(108, 99, 255, 0.08);
-    color: var(--primary, #6c63ff);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fbeeee;
     padding: 2px 7px;
     border-radius: 999px;
     margin-top: 2px;
