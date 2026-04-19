@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="dashboard.css" />
     <link rel="stylesheet" href="custom-courses.css" />
+    <link rel="stylesheet" href="custom-pages.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -236,7 +237,7 @@
                 <div class="section-header-dash">
                     <div>
                         <div class="card-eyebrow">Module</div>
-                        <h2 class="card-title-text">Các tài liệu của pkastudy</h2>
+                        <h2 class="card-title-text">Danh sách tài liệu</h2>
                     </div>
                 </div>
 
@@ -303,6 +304,42 @@
                         </div>
                         <div class="course-dash-footer">
                             <button class="btn btn-primary btn-small cd-view-btn">Xem ngay</button>
+                        </div>
+                    </div>
+
+                    <!-- Course 3: Tài liệu của bạn -->
+                    <div class="course-dash-card reveal" style="transition-delay:160ms">
+                        <div class="course-dash-top" style="background:linear-gradient(135deg,#fdf4ff,#ede9fe)">
+                            <span class="course-flag">Cá nhân</span>
+                            <span class="badge badge-premium">Cá nhân</span>
+                        </div>
+                        <div class="course-dash-body">
+                            <div class="course-dash-tag tag-super">Tự tạo</div>
+                            <h3 class="course-dash-name">Tài liệu của bạn</h3>
+                            <p class="course-dash-desc">Bộ từ vựng do bạn tự thêm và quản lý cá nhân.</p>
+                            <div class="course-dash-meta">
+                                <span class="cd-meta-words-custom">-từ</span>
+                                <span class="cd-meta-topics-custom">-chủ đề</span>
+                            </div>
+                            <div class="course-progress-section">
+                                <div class="course-progress-header">
+                                    <span>Tiến độ</span>
+                                    <span>
+                                        <strong class="cd-done-custom">0</strong> /
+                                        <strong class="cd-total-custom">0</strong> từ ·
+                                        <strong class="cd-pct-custom">0%</strong>
+                                    </span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill course-fill-custom"
+                                        style="background:var(--golden);width:0%;transition:width .6s ease"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="course-dash-footer">
+                            <button class="btn btn-small" id="viewCustomCourseBtn"
+                                style="background:linear-gradient(135deg,var(--golden),#ffad00);box-shadow:0 3px 0 #cc8800;color:#fff;width:100%;font-size:13px;border-radius:10px">Xem
+                                ngay</button>
                         </div>
                     </div>
 
@@ -443,13 +480,296 @@
         </main><!-- /page-courses -->
 
 
-        <main class="dash-main games-page" id="page-games" style="display:none"></main>
+        <main class="dash-main games-page" id="page-games" style="display:none">
+            <div class="coming-soon-wrapper">
+                <div class="cs-badge blue">
+                    <span class="cs-badge-dot"></span>
+                    Sắp ra mắt
+                </div>
+                <div class="cs-icon-wrap blue">
+                    <span class="cs-dot"></span>
+                    <span class="cs-dot"></span>
+                    <span class="cs-dot"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--blue)">
+                        <path
+                            d="M17 4C20.3137 4 23 6.68629 23 10V14C23 17.3137 20.3137 20 17 20H7C3.68629 20 1 17.3137 1 14V10C1 6.68629 3.68629 4 7 4H17ZM10 9H8V11H6V13H7.999L8 15H10L9.999 13H12V11H10V9ZM18 13H16V15H18V13ZM16 9H14V11H16V9Z" />
+                    </svg>
+                </div>
+                <h2 class="cs-title">Trò chơi ngôn ngữ</h2>
+                <p class="cs-sub">Tính năng trò chơi học từ vựng đang được phát triển. Sắp thôi -hãy chờ đón nhé! 🎮
+                </p>
+                <div class="cs-features">
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--blue)">
+                            <path
+                                d="M12 2L13.09 8.26L19 7L14.74 11.74L21 13L14.74 14.26L19 19L13.09 15.74L12 22L10.91 15.74L5 19L9.26 14.26L3 13L9.26 11.74L5 7L10.91 8.26L12 2Z" />
+                        </svg>
+                        Flashcard nhanh
+                    </div>
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--orange)">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 16.5V7.5L16 12L10 16.5Z" />
+                        </svg>
+                        Trắc nghiệm từ vựng
+                    </div>
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--green)">
+                            <path
+                                d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" />
+                        </svg>
+                        Bảng xếp hạng
+                    </div>
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--golden)">
+                            <path
+                                d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19H12V23C14.86 21.46 21 17.43 21 10.5C21 5.81 17.19 2 11.5 2ZM12.5 16.5H10.5V10.5H12.5V16.5ZM11.5 9C10.95 9 10.5 8.55 10.5 8C10.5 7.45 10.95 7 11.5 7C12.05 7 12.5 7.45 12.5 8C12.5 8.55 12.05 9 11.5 9Z" />
+                        </svg>
+                        Nối câu đôi
+                    </div>
+                </div>
+            </div>
+        </main>
 
 
-        <main class="dash-main stats-page" id="page-stats" style="display:none"></main>
+        <main class="dash-main stats-page" id="page-stats" style="display:none">
+            <div class="coming-soon-wrapper">
+                <div class="cs-badge green">
+                    <span class="cs-badge-dot"></span>
+                    Đang cập nhật
+                </div>
+                <div class="cs-icon-wrap green">
+                    <span class="cs-dot"></span>
+                    <span class="cs-dot"></span>
+                    <span class="cs-dot"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--green)">
+                        <path
+                            d="M12 7.00002C16.4183 7.00002 20 10.5817 20 15C20 19.4183 16.4183 23 12 23C7.58172 23 4 19.4183 4 15C4 10.5817 7.58172 7.00002 12 7.00002ZM12 10.5L10.6775 13.1797L7.72025 13.6094L9.86012 15.6953L9.35497 18.6406L12 17.25L14.645 18.6406L14.1399 15.6953L16.2798 13.6094L13.3225 13.1797L12 10.5ZM13 1.99902L18 2.00002V5.00002L16.6366 6.13758C15.5305 5.55773 14.3025 5.17887 13.0011 5.04951L13 1.99902ZM11 1.99902L10.9997 5.04943C9.6984 5.17866 8.47046 5.55738 7.36441 6.13706L6 5.00002V2.00002L11 1.99902Z" />
+                    </svg>
+                </div>
+                <h2 class="cs-title">Thống kê &amp; Xếp hạng</h2>
+                <p class="cs-sub">Chúng mình đang xây dựng bảng thống kê học tập chi tiết và bảng xếp hạng người học.
+                    Theo dõi để không bỏ lỡ! 📊</p>
+                <div class="cs-features">
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--green)">
+                            <path
+                                d="M3 3H21V21H3V3ZM5 5V19H19V5H5ZM7 15H9V17H7V15ZM7 11H9V14H7V11ZM7 7H9V10H7V7ZM11 15H13V17H11V15ZM11 11H13V14H11V11ZM11 9H13V10H11V9ZM15 15H17V17H15V15ZM15 13H17V14H15V13ZM15 7H17V12H15V7Z" />
+                        </svg>
+                        Thống kê từ vựng
+                    </div>
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--golden)">
+                            <path
+                                d="M16 11C17.66 11 18.99 9.66 18.99 8C18.99 6.34 17.66 5 16 5C14.34 5 13 6.34 13 8C13 9.66 14.34 11 16 11ZM8 11C9.66 11 10.99 9.66 10.99 8C10.99 6.34 9.66 5 8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11ZM8 13C5.67 13 1 14.17 1 16.5V19H15V16.5C15 14.17 10.33 13 8 13ZM16 13C15.71 13 15.38 13.02 15.03 13.05C16.19 13.89 17 15.02 17 16.5V19H23V16.5C23 14.17 18.33 13 16 13Z" />
+                        </svg>
+                        Bảng xếp hạng
+                    </div>
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--blue)">
+                            <path
+                                d="M11.99 2C6.47 2 2 6.48 2 12C2 17.52 6.47 22 11.99 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 11.99 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20ZM12.5 7H11V13L16.25 16.15L17 14.92L12.5 12.25V7Z" />
+                        </svg>
+                        Chuỗi ngày học
+                    </div>
+                    <div class="cs-feature-pill">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                            fill="var(--orange)">
+                            <path
+                                d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM9 17H7V10H9V17ZM13 17H11V7H13V17ZM17 17H15V13H17V17Z" />
+                        </svg>
+                        Tiến độ khóa học
+                    </div>
+                </div>
+            </div>
+        </main>
 
 
-        <main class="dash-main settings-page" id="page-settings" style="display:none"></main>
+        <main class="dash-main settings-page" id="page-settings" style="display:none">
+
+            <!-- Profile Header -->
+            <div class="settings-profile">
+                <div class="settings-avatar">G</div>
+                <div class="settings-profile-info">
+                    <div class="settings-greeting">Xin chào 👋</div>
+                    <div class="settings-name">Guest User</div>
+                    <span class="settings-role-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="11" height="11"
+                            fill="currentColor">
+                            <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" />
+                        </svg>
+                        Tài khoản khách
+                    </span>
+                </div>
+            </div>
+
+            <!-- Section: Tùy chỉnh -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <div class="settings-card-title">Tùy chỉnh</div>
+                </div>
+
+                <!-- Notifications toggle -->
+                <div class="settings-row">
+                    <div class="settings-row-icon blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+                            fill="currentColor">
+                            <path
+                                d="M22 20H2V18H3V11.0314C3 6.04348 7.02944 2 12 2C16.9706 2 21 6.04348 21 11.0314V18H22V20ZM9.5 21H14.5C14.5 22.3807 13.3807 23.5 12 23.5C10.6193 23.5 9.5 22.3807 9.5 21Z" />
+                        </svg>
+                    </div>
+                    <div class="settings-row-text">
+                        <span class="settings-row-label">Thông báo</span>
+                        <span class="settings-row-desc">Nhận nhắc nhở luyện tập hàng ngày</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggleNotif" checked>
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+
+                <!-- Dark mode toggle -->
+                <div class="settings-row">
+                    <div class="settings-row-icon purple">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+                            fill="currentColor">
+                            <path
+                                d="M11.3807 2.01886C9.91573 3.38768 9 5.33961 9 7.49998C9 11.6421 12.3579 15 16.5 15C18.6603 15 20.6123 14.0843 21.9811 12.6193C21.6613 17.8537 17.3149 22 12 22C6.47715 22 2 17.5228 2 12C2 6.68514 6.14629 2.33869 11.3807 2.01886Z" />
+                        </svg>
+                    </div>
+                    <div class="settings-row-text">
+                        <span class="settings-row-label">Chế độ tối</span>
+                        <span class="settings-row-desc">Giao diện tối, dễ nhìn hơn ban đêm</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggleDark">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Section: Hỗ trợ -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <div class="settings-card-title">Hỗ trợ</div>
+                </div>
+
+                <!-- Feedback button -->
+                <div class="settings-btn-row" id="openFeedbackBtn">
+                    <div class="settings-row-icon orange">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+                            fill="currentColor">
+                            <path
+                                d="M6.45455 19L2 22.5V4C2 3.44772 2.44772 3 3 3H21C21.5523 3 22 3.44772 22 4V18C22 18.5523 21.5523 19 21 19H6.45455ZM7 10H9V12H7V10ZM11 10H13V12H11V10ZM15 10H17V12H15V10Z" />
+                        </svg>
+                    </div>
+                    <div class="settings-row-text">
+                        <span class="settings-row-label">Góp ý &amp; Báo lỗi</span>
+                        <span class="settings-row-desc">Chia sẻ ý kiến để cải thiện PKA Study</span>
+                    </div>
+                    <svg class="settings-btn-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                        height="18" fill="currentColor">
+                        <path
+                            d="M13.1717 12L8.22192 7.05026L9.63613 5.63605L16.0001 12L9.63613 18.364L8.22192 16.9498L13.1717 12Z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="settings-actions">
+                <button class="btn btn-home" onclick="window.location.href='index.html'">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
+                        fill="currentColor">
+                        <path
+                            d="M20 20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V11L1 11L11.3273 1.6115C11.7087 1.26475 12.2913 1.26475 12.6727 1.6115L23 11L20 11V20Z" />
+                    </svg>
+                    Trang chủ
+                </button>
+                <button class="btn btn-logout" onclick="logout && logout(); window.location.href='index.html'">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
+                        fill="currentColor">
+                        <path
+                            d="M5 22C4.44772 22 4 21.5523 4 21V3C4 2.44772 4.44772 2 5 2H19C19.5523 2 20 2.44772 20 3V6H18V4H6V20H18V18H20V21C20 21.5523 19.5523 22 19 22H5ZM18 16V13H11V11H18V8L23 12L18 16Z" />
+                    </svg>
+                    Đăng xuất
+                </button>
+            </div>
+
+        </main>
+
+        <!-- ══ FEEDBACK MODAL ══ -->
+        <div class="feedback-overlay" id="feedbackOverlay">
+            <div class="feedback-sheet" id="feedbackSheet">
+                <div class="feedback-handle"></div>
+                <div class="feedback-header">
+                    <div class="feedback-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"
+                            fill="var(--blue)">
+                            <path
+                                d="M6.45455 19L2 22.5V4C2 3.44772 2.44772 3 3 3H21C21.5523 3 22 3.44772 22 4V18C22 18.5523 21.5523 19 21 19H6.45455Z" />
+                        </svg>
+                        Góp ý &amp; Báo lỗi
+                    </div>
+                    <button class="feedback-close-btn" id="closeFeedbackBtn">&times;</button>
+                </div>
+
+                <div class="feedback-form">
+                    <!-- Chọn loại -->
+                    <div class="feedback-field">
+                        <div class="feedback-label">Loại phản hồi</div>
+                        <div class="feedback-chips">
+                            <button class="feedback-chip active" data-type="gopý" onclick="selectChip(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"
+                                    fill="currentColor">
+                                    <path
+                                        d="M2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12ZM11 11V17H13V11H11ZM11 7V9H13V7H11Z" />
+                                </svg>
+                                Góp ý
+                            </button>
+                            <button class="feedback-chip red" data-type="baoLoi" onclick="selectChip(this, true)">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"
+                                    fill="currentColor">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" />
+                                </svg>
+                                Báo lỗi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tiêu đề -->
+                    <div class="feedback-field">
+                        <div class="feedback-label">Tiêu đề</div>
+                        <input class="feedback-input" type="text" placeholder="Nhập tiêu đề ngắn gọn..."
+                            id="feedbackTitle">
+                    </div>
+
+                    <!-- Nội dung -->
+                    <div class="feedback-field">
+                        <div class="feedback-label">Nội dung</div>
+                        <textarea class="feedback-textarea" placeholder="Mô tả chi tiết vấn đề hoặc ý kiến của bạn..."
+                            id="feedbackContent"></textarea>
+                    </div>
+
+                    <!-- Submit -->
+                    <button class="feedback-submit" id="feedbackSubmitBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        Gửi phản hồi
+                    </button>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -537,6 +857,126 @@
     <script src="dashboard-chat.js"></script>
     <script src="courses-data.js"></script>
     <script src="courses-viewer.js"></script>
+    <script>
+        /* ── Feedback Modal ── */
+        const feedbackOverlay = document.getElementById('feedbackOverlay');
+        const openFeedbackBtn = document.getElementById('openFeedbackBtn');
+        const closeFeedbackBtn = document.getElementById('closeFeedbackBtn');
+
+        if (openFeedbackBtn) {
+            openFeedbackBtn.addEventListener('click', () => {
+                feedbackOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function closeFeedback() {
+            feedbackOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        if (closeFeedbackBtn) closeFeedbackBtn.addEventListener('click', closeFeedback);
+        if (feedbackOverlay) {
+            feedbackOverlay.addEventListener('click', (e) => {
+                if (e.target === feedbackOverlay) closeFeedback();
+            });
+        }
+
+        /* Chip selection */
+        function selectChip(el, isRed) {
+            document.querySelectorAll('.feedback-chip').forEach(c => {
+                c.classList.remove('active');
+            });
+            el.classList.add('active');
+            if (isRed) el.classList.add('red');
+        }
+
+        /* Submit (UI only) */
+        const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
+        if (feedbackSubmitBtn) {
+            feedbackSubmitBtn.addEventListener('click', () => {
+                const title = document.getElementById('feedbackTitle').value.trim();
+                const content = document.getElementById('feedbackContent').value.trim();
+                if (!title || !content) {
+                    feedbackSubmitBtn.style.background = 'var(--orange)';
+                    feedbackSubmitBtn.textContent = 'Vui lòng điền đầy đủ thông tin!';
+                    setTimeout(() => {
+                        feedbackSubmitBtn.style.background = '';
+                        feedbackSubmitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Gửi phản hồi`;
+                    }, 2000);
+                    return;
+                }
+                feedbackSubmitBtn.innerHTML = 'Đã gửi!';
+                feedbackSubmitBtn.style.background = 'var(--green)';
+                feedbackSubmitBtn.style.boxShadow = '0 4px 0 var(--green-shadow)';
+                document.getElementById('feedbackTitle').value = '';
+                document.getElementById('feedbackContent').value = '';
+                setTimeout(() => {
+                    closeFeedback();
+                    feedbackSubmitBtn.style.background = '';
+                    feedbackSubmitBtn.style.boxShadow = '';
+                    feedbackSubmitBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Gửi phản hồi`;
+                }, 2200);
+            });
+        }
+        /* ── viewCustomCourseBtn: chuyển sang Courses → tab "Tài liệu của bạn" ── */
+        (function waitForSwitchPage() {
+            var btn = document.getElementById('viewCustomCourseBtn');
+            if (!btn) return;
+
+            btn.addEventListener('click', function () {
+                // 1. Chuyển sang page courses (dùng hàm switchPage trong dashboard.js)
+                //    switchPage được định nghĩa bên trong IIFE, nên trigger qua click nav link
+                var coursesNavLink = document.querySelector('[data-page="courses"]');
+                if (coursesNavLink) coursesNavLink.click();
+
+                // 2. Đợi trang courses hiện ra, rồi kích hoạt tab custom
+                setTimeout(function () {
+                    var customTab = document.querySelector('.lang-tab-btn[data-lang="custom"]');
+                    if (customTab) customTab.click();
+                }, 80);
+            });
+
+            // Đồng bộ thống kê custom courses lên card dashboard
+            function syncCustomCard() {
+                var customCourses = [];
+                try { customCourses = JSON.parse(localStorage.getItem('pka_custom_courses')) || []; } catch (e) { }
+
+                var remembered = {};
+                try { remembered = JSON.parse(localStorage.getItem('pka_remembered')) || {}; } catch (e) { }
+
+                var totalWords = 0, doneWords = 0;
+                customCourses.forEach(function (topic) {
+                    totalWords += (topic.words || []).length;
+                    (topic.words || []).forEach(function (w) {
+                        if (remembered[w.id]) doneWords++;
+                    });
+                });
+
+                var pct = totalWords > 0 ? Math.round((doneWords / totalWords) * 100) : 0;
+
+                var elWords = document.querySelector('.cd-meta-words-custom');
+                var elTopics = document.querySelector('.cd-meta-topics-custom');
+                var elDone = document.querySelector('.cd-done-custom');
+                var elTotal = document.querySelector('.cd-total-custom');
+                var elPct = document.querySelector('.cd-pct-custom');
+                var elFill = document.querySelector('.course-fill-custom');
+
+                if (elWords) elWords.textContent = totalWords + ' từ';
+                if (elTopics) elTopics.textContent = customCourses.length + ' chủ đề';
+                if (elDone) elDone.textContent = doneWords;
+                if (elTotal) elTotal.textContent = totalWords;
+                if (elPct) elPct.textContent = pct + '%';
+                if (elFill) elFill.style.width = pct + '%';
+            }
+
+            // Chạy ngay và lắng nghe storage thay đổi
+            syncCustomCard();
+            window.addEventListener('storage', syncCustomCard);
+            // Cũng expose để dashboard.js gọi được
+            window.pkaSyncCustomCard = syncCustomCard;
+        })();
+    </script>
 </body>
 
 </html>
