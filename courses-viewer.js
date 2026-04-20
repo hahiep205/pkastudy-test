@@ -1,7 +1,8 @@
 /* ════════════════════════════════════════════════
-   PKA Study - courses-viewer.js  (v3 - fixed)
+   PKA Study - courses-viewer.js  (v4 - language field)
    Render topic list & word view inside #page-courses
    + Custom "Tài liệu của bạn" module
+   + language field trên từng word object
 ════════════════════════════════════════════════ */
 'use strict';
 
@@ -30,6 +31,10 @@
 
   const LANG_LABEL = {
     'en': 'Anh', 'ko': 'Hàn', 'ja': 'Nhật', 'zh': 'Trung', 'fr': 'Pháp'
+  };
+
+  const FLAG_MAP = {
+    'en': '🇺🇸', 'ko': '🇰🇷', 'ja': '🇯🇵', 'zh': '🇨🇳', 'fr': '🇫🇷'
   };
 
   /* ══════════════════════════════════════════════
@@ -282,13 +287,23 @@
       const nameInput = document.getElementById('cv-tp-new-name');
       const name = nameInput.value.trim();
       if (!name) { showInputError(nameInput, 'Vui lòng nhập tên danh sách'); return; }
-      createTopic({ title: name, description: '', lang: 'en' });
+
+      // Dùng language của word gốc làm lang mặc định cho topic mới
+      const wordLang = word.language || 'en';
+      createTopic({ title: name, description: '', lang: wordLang });
+
       const updatedCourses = loadCustomCourses();
       const newTopic = updatedCourses[updatedCourses.length - 1];
+
+      // [LANGUAGE] Truyền language từ word gốc vào word được thêm
       addWord(newTopic.id, {
-        word: word.word, transcription: word.transcription,
-        mean: word.mean, wordtype: word.wordtype,
-        example: word.example, example_vi: word.example_vi
+        word: word.word,
+        transcription: word.transcription,
+        mean: word.mean,
+        wordtype: word.wordtype,
+        example: word.example,
+        example_vi: word.example_vi,
+        language: word.language || wordLang
       });
       renderCustomPanel();
       closeTopicPicker();
@@ -310,10 +325,15 @@
         closeTopicPicker();
         return;
       }
+      // [LANGUAGE] Truyền language từ word gốc vào word được copy
       addWord(selectedTopicId, {
-        word: word.word, transcription: word.transcription,
-        mean: word.mean, wordtype: word.wordtype,
-        example: word.example, example_vi: word.example_vi
+        word: word.word,
+        transcription: word.transcription,
+        mean: word.mean,
+        wordtype: word.wordtype,
+        example: word.example,
+        example_vi: word.example_vi,
+        language: word.language || 'en'
       });
       renderCustomPanel();
       closeTopicPicker();
@@ -354,9 +374,20 @@
     document.body.style.overflow = '';
   }
 
+  // [LANGUAGE] lang giờ được ưu tiên lấy từ word.language, fallback sang tham số lang truyền vào
   function openWordDetailOverlay(word, showAddBtn, lang) {
+    // Ưu tiên language trên chính word object, fallback sang lang của course/topic
+    const effectiveLang = word.language || lang || 'en';
+
     const voiceIconMd = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
     const addToMyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>`;
+
+    // [LANGUAGE] Hiển thị badge ngôn ngữ trong detail overlay
+    const langBadge = effectiveLang
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:.75rem;background:var(--bg-page);padding:2px 9px;border-radius:20px;color:var(--gray-light);font-weight:600;border:1px solid var(--border-color)">
+           ${FLAG_MAP[effectiveLang] || '🌐'} ${LANG_LABEL[effectiveLang] || effectiveLang.toUpperCase()}
+         </span>`
+      : '';
 
     const box = document.getElementById('cv-word-detail-box');
     box.innerHTML = `
@@ -364,6 +395,7 @@
             <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
               <h3 style="font-size:1.15rem;font-weight:800;color:var(--dark-blue)">${escHtml(word.word)}</h3>
               ${word.transcription ? `<span style="font-size:.85rem;color:var(--gray-light);font-weight:500">${escHtml(word.transcription)}</span>` : ''}
+              ${langBadge}
             </div>
             <button class="cv-modal-close" id="cv-wd-close-btn" type="button">&times;</button>
           </div>
@@ -406,7 +438,8 @@
     document.body.style.overflow = 'hidden';
 
     document.getElementById('cv-wd-close-btn').addEventListener('click', closeWordDetail);
-    document.getElementById('cv-wd-voice-btn').addEventListener('click', () => speak(word.word, lang));
+    // [LANGUAGE] Dùng effectiveLang đã resolve ở trên để speak đúng ngôn ngữ
+    document.getElementById('cv-wd-voice-btn').addEventListener('click', () => speak(word.word, effectiveLang));
     document.getElementById('cv-wd-add-btn')?.addEventListener('click', () => {
       closeWordDetail();
       showTopicPickerToggle(word);
@@ -462,6 +495,7 @@
     }
   });
 
+  // [LANGUAGE] LANG_MAP mở rộng để nhận cả language code lẫn label tiếng Việt
   function speak(text, lang) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
@@ -593,8 +627,13 @@
       row.id = `cv-row-${word.id}`;
       row.innerHTML = buildWordRowHTML(word, rem, false, true);
 
+      // [LANGUAGE] Dùng word.language trước, fallback sang course.lang
       row.querySelectorAll('.cv-voice-btn').forEach(btn =>
-        btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, course.lang); }));
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          speak(word.word, word.language || course.lang);
+        }));
+
       row.querySelector('.cv-switch-chk').addEventListener('change', (e) => {
         if (e.target.checked) rememberedMap[word.id] = true;
         else delete rememberedMap[word.id];
@@ -603,10 +642,10 @@
         updateStats(topic.words);
       });
 
-      /* Click row → mở word detail overlay */
+      // [LANGUAGE] Truyền word.language vào openWordDetailOverlay; hàm đó tự resolve
       row.addEventListener('click', (e) => {
         if (e.target.closest('button, label, input, a')) return;
-        openWordDetailOverlay(word, true, course.lang);
+        openWordDetailOverlay(word, true, word.language || course.lang);
       });
 
       container.appendChild(row);
@@ -791,6 +830,10 @@
     const pct = wordCount > 0 ? Math.round((doneCount / wordCount) * 100) : 0;
     const emoji = extractEmoji(topic.title);
 
+    // [LANGUAGE] Hiển thị flag ngôn ngữ trên card topic
+    const topicFlag = FLAG_MAP[topic.lang] || '🌐';
+    const topicLangLabel = LANG_LABEL[topic.lang] || (topic.lang || '').toUpperCase();
+
     const card = document.createElement('div');
     card.className = 'doc-card cv-custom-card reveal revealed';
     card.innerHTML = `
@@ -800,7 +843,7 @@
       <div class="doc-info">
         <div class="doc-meta-row">
           <span class="doc-type-badge cv-custom-badge">CÁ NHÂN</span>
-          <span class="doc-level">${wordCount} từ vựng</span>
+          <span class="doc-level">${topicFlag} ${topicLangLabel} · ${wordCount} từ</span>
         </div>
         <h3 class="doc-name">${escHtml(topic.title)}</h3>
         <p class="doc-desc">${escHtml(topic.description || 'Chủ đề từ vựng cá nhân của bạn')}</p>
@@ -877,8 +920,12 @@
       row.id = `cv-row-${word.id}`;
       row.innerHTML = buildWordRowHTML(word, rem, true, false);
 
+      // [LANGUAGE] Dùng word.language trước, fallback sang topic.lang
       row.querySelectorAll('.cv-voice-btn').forEach(btn =>
-        btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, topic.lang || 'en'); }));
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          speak(word.word, word.language || topic.lang || 'en');
+        }));
 
       /* Sync cả hai switch: desktop (.cv-switch-chk) và mobile actions (.cv-switch-chk-extra) */
       const syncSwitches = (checked) => {
@@ -904,10 +951,10 @@
         }
       });
 
-      /* Click row → mở word detail overlay */
+      // [LANGUAGE] Truyền word.language vào openWordDetailOverlay; hàm đó tự resolve
       row.addEventListener('click', (e) => {
         if (e.target.closest('button, label, input, a')) return;
-        openWordDetailOverlay(word, false, topic.lang || 'en');
+        openWordDetailOverlay(word, false, word.language || topic.lang || 'en');
       });
 
       container.appendChild(row);
@@ -1106,7 +1153,6 @@
       const title = $('cv-topic-title-input').value.trim();
       const desc = $('cv-topic-desc-input').value.trim();
       const lang = $('cv-topic-lang-input').value;
-      // FIX: validate tên chủ đề (thay thế placeholder { ... })
       if (!title) {
         showInputError($('cv-topic-title-input'), 'Vui lòng nhập tên chủ đề');
         return;
@@ -1175,12 +1221,19 @@
       const mean = $('cv-wf-mean').value.trim();
       if (!word) { showInputError($('cv-wf-word'), 'Vui lòng nhập từ vựng'); return; }
       if (!mean) { showInputError($('cv-wf-mean'), 'Vui lòng nhập nghĩa'); return; }
+
+      // [LANGUAGE] Lấy language từ topic hiện tại để gán vào word mới/sửa
+      const allCourses = loadCustomCourses();
+      const activeTopic = allCourses.find(t => t.id === currentCustomTopicId);
+      const wordLanguage = existing?.language || activeTopic?.lang || 'en';
+
       const data = {
         word,
         transcription: $('cv-wf-trans').value.trim(),
         mean,
         wordtype: $('cv-wf-type').value,
-        example: $('cv-wf-example').value.trim()
+        example: $('cv-wf-example').value.trim(),
+        language: wordLanguage   // [LANGUAGE] Gán language vào word data
       };
       if (isEdit) updateWord(currentCustomTopicId, existing.id, data);
       else addWord(currentCustomTopicId, data);
@@ -1232,7 +1285,6 @@
     const topicLang = topic?.lang || 'en';
     const topicLangLabel = LANG_LABEL[topicLang] || 'Anh';
 
-    const FLAG_MAP = { 'en': '🇺🇸', 'ko': '🇰🇷', 'ja': '🇯🇵', 'zh': '🇨🇳', 'fr': '🇫🇷' };
     const flag = FLAG_MAP[topicLang] || '🌐';
 
     openModal(`
@@ -1281,7 +1333,7 @@
 
   async function runAIGeneration(topicLang, topicLangLabel) {
     const theme = $('cv-ai-theme').value.trim();
-    const lang = topicLangLabel;   // lấy từ topic, không từ select
+    const lang = topicLangLabel;
     const count = parseInt($('cv-ai-count').value);
 
     if (!theme) { showInputError($('cv-ai-theme'), 'Vui lòng nhập chủ đề'); return; }
@@ -1295,7 +1347,7 @@
 
     try {
       const words = await callAIForWords(theme, lang, count);
-      showAIPreview(words, theme, lang);
+      showAIPreview(words, theme, lang, topicLang);
     } catch (err) {
       $('cv-ai-modal-body').innerHTML = `
         <div class="cv-ai-error">
@@ -1335,7 +1387,8 @@ Mỗi phần tử trong array là một object với đúng 6 trường:
     return JSON.parse(match[0]);
   }
 
-  function showAIPreview(words, theme, lang) {
+  // [LANGUAGE] Nhận thêm tham số topicLang để inject vào từng word khi lưu
+  function showAIPreview(words, theme, lang, topicLang) {
     if (!words || !words.length) { throw new Error('Danh sách từ trống'); }
 
     const rows = words.map((w, i) => `
@@ -1383,7 +1436,10 @@ Mỗi phần tử trong array là một object với đúng 6 trường:
     $('cv-ai-add-btn').addEventListener('click', () => {
       const selected = [...document.querySelectorAll('.cv-ai-chk:checked')]
         .map(cb => words[parseInt(cb.dataset.idx)])
-        .filter(Boolean);
+        .filter(Boolean)
+        // [LANGUAGE] Inject language từ topicLang vào từng word do AI tạo ra
+        .map(w => ({ ...w, language: topicLang || 'en' }));
+
       if (!selected.length) { alert('Vui lòng chọn ít nhất 1 từ'); return; }
       addManyWords(currentCustomTopicId, selected);
       closeModal();
@@ -1405,15 +1461,11 @@ Mỗi phần tử trong array là một object với đúng 6 trường:
      INIT
   ══════════════════════════════════════════════ */
 
-  // Lắng nghe click tab "Tài liệu của bạn" (đã có trong dashboard.js nhưng giữ lại để dự phòng)
+  // Lắng nghe click tab "Tài liệu của bạn"
   document.querySelector('.lang-tab-btn[data-lang="custom"]')
     ?.addEventListener('click', renderCustomPanel);
 
   // Cập nhật badge số chủ đề ngay khi tải trang
   updateCustomTabCount();
 
-  // ════════════════════════════════════════════════
-  // FIX: Đóng IIFE - đây là dòng bị thiếu gây toàn bộ
-  //      script không chạy (SyntaxError unclosed function)
-  // ════════════════════════════════════════════════
 })();
