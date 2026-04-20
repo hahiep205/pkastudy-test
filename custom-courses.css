@@ -108,6 +108,30 @@
     box-shadow: 0 4px 14px rgba(28, 176, 246, .4);
 }
 
+.cv-ask-ai-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s, transform .15s, box-shadow .15s;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, .3);
+    letter-spacing: .01em;
+}
+
+.cv-ask-ai-btn:hover {
+    opacity: .88;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(124, 58, 237, .4);
+}
+
+
 /* ══════════════════════════════════════════════
    TOPIC PICKER TOGGLE
 ══════════════════════════════════════════════ */

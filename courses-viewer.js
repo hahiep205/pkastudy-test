@@ -7,46 +7,46 @@
 
 (function () {
 
-    /* ══════════════════════════════════════════════
-       STORAGE
-    ══════════════════════════════════════════════ */
-    const STORAGE_KEY = 'pka_remembered';
-    const CUSTOM_KEY = 'pka_custom_courses';
+  /* ══════════════════════════════════════════════
+     STORAGE
+  ══════════════════════════════════════════════ */
+  const STORAGE_KEY = 'pka_remembered';
+  const CUSTOM_KEY = 'pka_custom_courses';
 
-    function loadRemembered() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
-    function saveRemembered(m) { localStorage.setItem(STORAGE_KEY, JSON.stringify(m)); if (typeof window.pkaSyncDashboard === 'function') window.pkaSyncDashboard(); }
-    function loadCustomCourses() { try { return JSON.parse(localStorage.getItem(CUSTOM_KEY)) || []; } catch { return []; } }
-    function saveCustomCourses(c) { localStorage.setItem(CUSTOM_KEY, JSON.stringify(c)); }
-    function genId(prefix) { return prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6); }
+  function loadRemembered() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
+  function saveRemembered(m) { localStorage.setItem(STORAGE_KEY, JSON.stringify(m)); if (typeof window.pkaSyncDashboard === 'function') window.pkaSyncDashboard(); }
+  function loadCustomCourses() { try { return JSON.parse(localStorage.getItem(CUSTOM_KEY)) || []; } catch { return []; } }
+  function saveCustomCourses(c) { localStorage.setItem(CUSTOM_KEY, JSON.stringify(c)); }
+  function genId(prefix) { return prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6); }
 
-    /* ══════════════════════════════════════════════
-       STATE
-    ══════════════════════════════════════════════ */
-    let rememberedMap = loadRemembered();
-    let currentCourse = null;
-    let currentTopic = null;
-    let isCustomMode = false;
-    let currentCustomTopicId = null;
+  /* ══════════════════════════════════════════════
+     STATE
+  ══════════════════════════════════════════════ */
+  let rememberedMap = loadRemembered();
+  let currentCourse = null;
+  let currentTopic = null;
+  let isCustomMode = false;
+  let currentCustomTopicId = null;
 
-    const LANG_LABEL = {
-        'en': 'Anh', 'ko': 'Hàn', 'ja': 'Nhật', 'zh': 'Trung', 'fr': 'Pháp'
-    };
+  const LANG_LABEL = {
+    'en': 'Anh', 'ko': 'Hàn', 'ja': 'Nhật', 'zh': 'Trung', 'fr': 'Pháp'
+  };
 
-    /* ══════════════════════════════════════════════
-       ROOT ELEMENT
-    ══════════════════════════════════════════════ */
-    const coursePage = document.getElementById('page-courses');
-    if (!coursePage) return;
+  /* ══════════════════════════════════════════════
+     ROOT ELEMENT
+  ══════════════════════════════════════════════ */
+  const coursePage = document.getElementById('page-courses');
+  if (!coursePage) return;
 
-    /* ══════════════════════════════════════════════
-       BUILD SUB-VIEWS
-    ══════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════
+     BUILD SUB-VIEWS
+  ══════════════════════════════════════════════ */
 
-    // ── Sub-view A: Topic list ──
-    const topicsView = document.createElement('div');
-    topicsView.id = 'cv-topics-view';
-    topicsView.className = 'cv-subview cv-hidden';
-    topicsView.innerHTML = `
+  // ── Sub-view A: Topic list ──
+  const topicsView = document.createElement('div');
+  topicsView.id = 'cv-topics-view';
+  topicsView.className = 'cv-subview cv-hidden';
+  topicsView.innerHTML = `
     <div class="cv-subview-header">
       <button class="cv-breadcrumb-btn" id="cv-back-to-courses">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -60,11 +60,11 @@
     <div class="cv-topics-grid" id="cv-topics-grid"></div>
   `;
 
-    // ── Sub-view B: Word view (shared for both regular & custom) ──
-    const wordsView = document.createElement('div');
-    wordsView.id = 'cv-words-view';
-    wordsView.className = 'cv-subview cv-hidden';
-    wordsView.innerHTML = `
+  // ── Sub-view B: Word view (shared for both regular & custom) ──
+  const wordsView = document.createElement('div');
+  wordsView.id = 'cv-words-view';
+  wordsView.className = 'cv-subview cv-hidden';
+  wordsView.innerHTML = `
     <div class="cv-subview-header">
       <button class="cv-breadcrumb-btn" id="cv-back-to-topics">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -150,66 +150,66 @@
     </section>
   `;
 
-    coursePage.appendChild(topicsView);
-    coursePage.appendChild(wordsView);
+  coursePage.appendChild(topicsView);
+  coursePage.appendChild(wordsView);
 
-    /* ══════════════════════════════════════════════
-       MODAL SYSTEM
-    ══════════════════════════════════════════════ */
-    const modalOverlay = document.createElement('div');
-    modalOverlay.id = 'cv-modal-overlay';
-    modalOverlay.className = 'cv-modal-overlay';
-    modalOverlay.innerHTML = `<div class="cv-modal-box" id="cv-modal-box"></div>`;
-    document.body.appendChild(modalOverlay);
+  /* ══════════════════════════════════════════════
+     MODAL SYSTEM
+  ══════════════════════════════════════════════ */
+  const modalOverlay = document.createElement('div');
+  modalOverlay.id = 'cv-modal-overlay';
+  modalOverlay.className = 'cv-modal-overlay';
+  modalOverlay.innerHTML = `<div class="cv-modal-box" id="cv-modal-box"></div>`;
+  document.body.appendChild(modalOverlay);
 
-    function openModal(html) {
-        document.getElementById('cv-modal-box').innerHTML = html;
-        modalOverlay.classList.add('cv-modal-active');
-        document.body.style.overflow = 'hidden';
-        setTimeout(() => { modalOverlay.querySelector('input, textarea')?.focus(); }, 80);
-    }
+  function openModal(html) {
+    document.getElementById('cv-modal-box').innerHTML = html;
+    modalOverlay.classList.add('cv-modal-active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { modalOverlay.querySelector('input, textarea')?.focus(); }, 80);
+  }
 
-    function closeModal() {
-        modalOverlay.classList.remove('cv-modal-active');
-        document.body.style.overflow = '';
-    }
+  function closeModal() {
+    modalOverlay.classList.remove('cv-modal-active');
+    document.body.style.overflow = '';
+  }
 
-    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeTopicPicker(); closeWordDetail(); } });
+  modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeTopicPicker(); closeWordDetail(); } });
 
-    /* ══════════════════════════════════════════════
-       TOPIC PICKER TOGGLE (Thêm vào bộ từ của tôi)
-    ══════════════════════════════════════════════ */
-    const topicPickerOverlay = document.createElement('div');
-    topicPickerOverlay.id = 'cv-topic-picker-overlay';
-    topicPickerOverlay.className = 'cv-topic-picker-overlay';
-    topicPickerOverlay.innerHTML = `<div class="cv-topic-picker-box" id="cv-topic-picker-box"></div>`;
-    document.body.appendChild(topicPickerOverlay);
+  /* ══════════════════════════════════════════════
+     TOPIC PICKER TOGGLE (Thêm vào bộ từ của tôi)
+  ══════════════════════════════════════════════ */
+  const topicPickerOverlay = document.createElement('div');
+  topicPickerOverlay.id = 'cv-topic-picker-overlay';
+  topicPickerOverlay.className = 'cv-topic-picker-overlay';
+  topicPickerOverlay.innerHTML = `<div class="cv-topic-picker-box" id="cv-topic-picker-box"></div>`;
+  document.body.appendChild(topicPickerOverlay);
 
-    topicPickerOverlay.addEventListener('click', (e) => { if (e.target === topicPickerOverlay) closeTopicPicker(); });
+  topicPickerOverlay.addEventListener('click', (e) => { if (e.target === topicPickerOverlay) closeTopicPicker(); });
 
-    function openTopicPicker(html) {
-        document.getElementById('cv-topic-picker-box').innerHTML = html;
-        topicPickerOverlay.classList.add('cv-tp-active');
-        document.body.style.overflow = 'hidden';
-        setTimeout(() => { topicPickerOverlay.querySelector('input')?.focus(); }, 80);
-    }
+  function openTopicPicker(html) {
+    document.getElementById('cv-topic-picker-box').innerHTML = html;
+    topicPickerOverlay.classList.add('cv-tp-active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { topicPickerOverlay.querySelector('input')?.focus(); }, 80);
+  }
 
-    function closeTopicPicker() {
-        topicPickerOverlay.classList.remove('cv-tp-active');
-        document.body.style.overflow = '';
-    }
+  function closeTopicPicker() {
+    topicPickerOverlay.classList.remove('cv-tp-active');
+    document.body.style.overflow = '';
+  }
 
-    function showTopicPickerToggle(word) {
-        const courses = loadCustomCourses();
-        const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"/></svg>`;
+  function showTopicPickerToggle(word) {
+    const courses = loadCustomCourses();
+    const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"/></svg>`;
 
-        const topicListHtml = courses.length === 0
-            ? `<div class="cv-tp-empty">
+    const topicListHtml = courses.length === 0
+      ? `<div class="cv-tp-empty">
                 <div style="font-size:2rem;margin-bottom:10px">📭</div>
                 <p>Bạn chưa có danh sách nào.<br>Hãy tạo danh sách đầu tiên bên dưới!</p>
                </div>`
-            : `<div class="cv-tp-topic-list" id="cv-tp-topic-list">
+      : `<div class="cv-tp-topic-list" id="cv-tp-topic-list">
                 ${courses.map(t => `
                   <div class="cv-tp-topic-item" data-topic-id="${t.id}">
                     <div class="cv-tp-topic-emoji">${extractEmoji(t.title)}</div>
@@ -221,7 +221,7 @@
                   </div>`).join('')}
                </div>`;
 
-        openTopicPicker(`
+    openTopicPicker(`
           <div class="cv-modal-header">
             <h3>📚 Thêm vào bộ từ của tôi</h3>
             <button class="cv-modal-close" id="cv-tp-close-btn" type="button">&times;</button>
@@ -248,118 +248,120 @@
             <button class="btn btn-primary" id="cv-tp-add-btn" ${courses.length === 0 ? 'disabled style="opacity:.45;cursor:not-allowed"' : ''}>Thêm vào</button>
           </div>`);
 
-        /* ── Bind events ── */
-        document.getElementById('cv-tp-close-btn').addEventListener('click', closeTopicPicker);
-        document.getElementById('cv-tp-cancel-btn').addEventListener('click', closeTopicPicker);
+    /* ── Bind events ── */
+    document.getElementById('cv-tp-close-btn').addEventListener('click', closeTopicPicker);
+    document.getElementById('cv-tp-cancel-btn').addEventListener('click', closeTopicPicker);
 
-        let selectedTopicId = null;
+    let selectedTopicId = null;
 
-        /* Topic item selection */
-        document.querySelectorAll('.cv-tp-topic-item').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.cv-tp-topic-item').forEach(i => i.classList.remove('cv-tp-selected'));
-                item.classList.add('cv-tp-selected');
-                selectedTopicId = item.dataset.topicId;
-                document.getElementById('cv-tp-add-btn').removeAttribute('disabled');
-                document.getElementById('cv-tp-add-btn').style.opacity = '';
-                document.getElementById('cv-tp-add-btn').style.cursor = '';
-            });
-        });
-
-        /* Toggle "Tạo danh sách mới" form */
-        const createRow = document.getElementById('cv-tp-create-row');
-        const newWrap = document.getElementById('cv-tp-new-wrap');
-        createRow.addEventListener('click', () => {
-            newWrap.classList.toggle('cv-tp-new-visible');
-            if (newWrap.classList.contains('cv-tp-new-visible')) {
-                document.getElementById('cv-tp-new-name').focus();
-            }
-        });
-        createRow.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') createRow.click(); });
-
-        /* "Tạo và thêm vào" */
-        document.getElementById('cv-tp-confirm-new-btn').addEventListener('click', () => {
-            const nameInput = document.getElementById('cv-tp-new-name');
-            const name = nameInput.value.trim();
-            if (!name) { showInputError(nameInput, 'Vui lòng nhập tên danh sách'); return; }
-            createTopic({ title: name, description: '', lang: 'en' });
-            const updatedCourses = loadCustomCourses();
-            const newTopic = updatedCourses[updatedCourses.length - 1];
-            addWord(newTopic.id, {
-                word: word.word, transcription: word.transcription,
-                mean: word.mean, wordtype: word.wordtype,
-                example: word.example, example_vi: word.example_vi
-            });
-            renderCustomPanel();
-            closeTopicPicker();
-            showToast(`✅ Đã tạo "${escHtml(name)}" và thêm từ "${escHtml(word.word)}"`);
-        });
-        document.getElementById('cv-tp-new-name').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') document.getElementById('cv-tp-confirm-new-btn').click();
-        });
-
-        /* "Thêm vào" selected topic */
-        document.getElementById('cv-tp-add-btn').addEventListener('click', () => {
-            if (!selectedTopicId) return;
-            const target = loadCustomCourses().find(t => t.id === selectedTopicId);
-            if (!target) return;
-            /* Tránh thêm trùng */
-            const isDuplicate = target.words.some(w => w.word.toLowerCase() === word.word.toLowerCase());
-            if (isDuplicate) {
-                showToast(`⚠️ Từ "${escHtml(word.word)}" đã có trong "${escHtml(target.title)}"`);
-                closeTopicPicker();
-                return;
-            }
-            addWord(selectedTopicId, {
-                word: word.word, transcription: word.transcription,
-                mean: word.mean, wordtype: word.wordtype,
-                example: word.example, example_vi: word.example_vi
-            });
-            renderCustomPanel();
-            closeTopicPicker();
-            showToast(`✅ Đã thêm "${escHtml(word.word)}" vào "${escHtml(target.title)}"`);
-        });
-    }
-
-    /* ── Toast notification ── */
-    function showToast(msg) {
-        let toast = document.getElementById('cv-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'cv-toast';
-            toast.className = 'cv-toast';
-            document.body.appendChild(toast);
-        }
-        toast.textContent = msg;
-        toast.classList.add('cv-toast-show');
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(() => toast.classList.remove('cv-toast-show'), 2800);
-    }
-
-    /* ══════════════════════════════════════════════
-       WORD DETAIL OVERLAY (click cv-word-row)
-    ══════════════════════════════════════════════ */
-    const wordDetailOverlay = document.createElement('div');
-    wordDetailOverlay.id = 'cv-word-detail-overlay';
-    wordDetailOverlay.className = 'cv-topic-picker-overlay';
-    wordDetailOverlay.innerHTML = `<div class="cv-topic-picker-box" id="cv-word-detail-box"></div>`;
-    document.body.appendChild(wordDetailOverlay);
-
-    wordDetailOverlay.addEventListener('click', (e) => {
-        if (e.target === wordDetailOverlay) closeWordDetail();
+    /* Topic item selection */
+    document.querySelectorAll('.cv-tp-topic-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.cv-tp-topic-item').forEach(i => i.classList.remove('cv-tp-selected'));
+        item.classList.add('cv-tp-selected');
+        selectedTopicId = item.dataset.topicId;
+        document.getElementById('cv-tp-add-btn').removeAttribute('disabled');
+        document.getElementById('cv-tp-add-btn').style.opacity = '';
+        document.getElementById('cv-tp-add-btn').style.cursor = '';
+      });
     });
 
-    function closeWordDetail() {
-        wordDetailOverlay.classList.remove('cv-tp-active');
-        document.body.style.overflow = '';
+    /* Toggle "Tạo danh sách mới" form */
+    const createRow = document.getElementById('cv-tp-create-row');
+    const newWrap = document.getElementById('cv-tp-new-wrap');
+    createRow.addEventListener('click', () => {
+      newWrap.classList.toggle('cv-tp-new-visible');
+      if (newWrap.classList.contains('cv-tp-new-visible')) {
+        document.getElementById('cv-tp-new-name').focus();
+      }
+    });
+    createRow.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') createRow.click(); });
+
+    /* "Tạo và thêm vào" */
+    document.getElementById('cv-tp-confirm-new-btn').addEventListener('click', () => {
+      const nameInput = document.getElementById('cv-tp-new-name');
+      const name = nameInput.value.trim();
+      if (!name) { showInputError(nameInput, 'Vui lòng nhập tên danh sách'); return; }
+      createTopic({ title: name, description: '', lang: 'en' });
+      const updatedCourses = loadCustomCourses();
+      const newTopic = updatedCourses[updatedCourses.length - 1];
+      addWord(newTopic.id, {
+        word: word.word, transcription: word.transcription,
+        mean: word.mean, wordtype: word.wordtype,
+        example: word.example, example_vi: word.example_vi
+      });
+      renderCustomPanel();
+      closeTopicPicker();
+      showToast(`✅ Đã tạo "${escHtml(name)}" và thêm từ "${escHtml(word.word)}"`);
+    });
+    document.getElementById('cv-tp-new-name').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('cv-tp-confirm-new-btn').click();
+    });
+
+    /* "Thêm vào" selected topic */
+    document.getElementById('cv-tp-add-btn').addEventListener('click', () => {
+      if (!selectedTopicId) return;
+      const target = loadCustomCourses().find(t => t.id === selectedTopicId);
+      if (!target) return;
+      /* Tránh thêm trùng */
+      const isDuplicate = target.words.some(w => w.word.toLowerCase() === word.word.toLowerCase());
+      if (isDuplicate) {
+        showToast(`⚠️ Từ "${escHtml(word.word)}" đã có trong "${escHtml(target.title)}"`);
+        closeTopicPicker();
+        return;
+      }
+      addWord(selectedTopicId, {
+        word: word.word, transcription: word.transcription,
+        mean: word.mean, wordtype: word.wordtype,
+        example: word.example, example_vi: word.example_vi
+      });
+      renderCustomPanel();
+      closeTopicPicker();
+      showToast(`✅ Đã thêm "${escHtml(word.word)}" vào "${escHtml(target.title)}"`);
+    });
+  }
+
+  /* ── Toast notification ── */
+  function showToast(msg) {
+    let toast = document.getElementById('cv-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'cv-toast';
+      toast.className = 'cv-toast';
+      document.body.appendChild(toast);
     }
+    toast.textContent = msg;
+    toast.classList.add('cv-toast-show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('cv-toast-show'), 2800);
+  }
 
-    function openWordDetailOverlay(word, showAddBtn, lang) {
-        const voiceIconMd = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
-        const addToMyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>`;
+  /* ══════════════════════════════════════════════
+     WORD DETAIL OVERLAY (click cv-word-row)
+  ══════════════════════════════════════════════ */
+  const wordDetailOverlay = document.createElement('div');
+  wordDetailOverlay.id = 'cv-word-detail-overlay';
+  wordDetailOverlay.className = 'cv-topic-picker-overlay';
+  wordDetailOverlay.innerHTML = `<div class="cv-topic-picker-box" id="cv-word-detail-box"></div>`;
+  document.body.appendChild(wordDetailOverlay);
 
-        const box = document.getElementById('cv-word-detail-box');
-        box.innerHTML = `
+  wordDetailOverlay.addEventListener('click', (e) => {
+    if (e.target === wordDetailOverlay) closeWordDetail();
+  });
+
+  function closeWordDetail() {
+    wordDetailOverlay.classList.remove('cv-tp-active');
+    document.body.style.overflow = '';
+  }
+
+  function openWordDetailOverlay(word, showAddBtn, lang) {
+    const voiceIconMd = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
+    const addToMyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>`;
+
+    const askAIIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z"/></svg>`;
+
+    const box = document.getElementById('cv-word-detail-box');
+    box.innerHTML = `
           <div class="cv-modal-header">
             <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
               <h3 style="font-size:1.15rem;font-weight:800;color:var(--dark-blue)">${escHtml(word.word)}</h3>
@@ -391,122 +393,140 @@
               </div>` : ''}
             </div>
           </div>
-          ${showAddBtn ? `
           <div class="cv-modal-footer">
+            <button class="cv-ask-ai-btn" id="cv-wd-ask-ai-btn" type="button">
+              ${askAIIcon}
+              Hỏi AI
+            </button>
+            ${showAddBtn ? `
             <button class="cv-add-to-my-btn" id="cv-wd-add-btn" type="button">
               ${addToMyIcon}
               Thêm vào bộ từ của tôi
-            </button>
-          </div>` : ''}`;
+            </button>` : ''}
+          </div>`;
 
-        wordDetailOverlay.classList.add('cv-tp-active');
-        document.body.style.overflow = 'hidden';
+    wordDetailOverlay.classList.add('cv-tp-active');
+    document.body.style.overflow = 'hidden';
 
-        document.getElementById('cv-wd-close-btn').addEventListener('click', closeWordDetail);
-        document.getElementById('cv-wd-voice-btn').addEventListener('click', () => speak(word.word, lang));
-        document.getElementById('cv-wd-add-btn')?.addEventListener('click', () => {
-            closeWordDetail();
-            showTopicPickerToggle(word);
-        });
-    }
-
-    /* ══════════════════════════════════════════════
-       HELPER: getElementById shorthand
-    ══════════════════════════════════════════════ */
-    const $ = (id) => document.getElementById(id);
-
-    /* ══════════════════════════════════════════════
-       SHOW / HIDE SUB-VIEWS
-    ══════════════════════════════════════════════ */
-    function showSubView(which) {
-        Array.from(coursePage.children).forEach(el => {
-            if (el === topicsView || el === wordsView) return;
-            if (which === 'home') {
-                el.style.display = el.classList.contains('lang-content') ? 'block' : '';
-            } else {
-                el.style.display = 'none';
-            }
-        });
-        topicsView.classList.toggle('cv-hidden', which !== 'topics');
-        wordsView.classList.toggle('cv-hidden', which !== 'words');
-    }
-
-    /* ══════════════════════════════════════════════
-       WEB SPEECH - Fixed multi-language voice
-    ══════════════════════════════════════════════ */
-    let _voicesReady = false;
-    let _pendingSpeak = null;
-
-    window.speechSynthesis.addEventListener('voiceschanged', () => {
-        _voicesReady = true;
-        if (_pendingSpeak) {
-            window.speechSynthesis.speak(_pendingSpeak);
-            _pendingSpeak = null;
-        }
+    document.getElementById('cv-wd-close-btn').addEventListener('click', closeWordDetail);
+    document.getElementById('cv-wd-voice-btn').addEventListener('click', () => speak(word.word, lang));
+    document.getElementById('cv-wd-add-btn')?.addEventListener('click', () => {
+      closeWordDetail();
+      showTopicPickerToggle(word);
     });
 
-    function speak(text, lang) {
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel();
+    document.getElementById('cv-wd-ask-ai-btn').addEventListener('click', () => {
+      closeWordDetail();
+      if (typeof window.pkaAskAI === 'function') {
+        const parts = [];
+        parts.push(`Hãy giải thích chi tiết cho tôi về từ "${word.word}"`);
+        if (word.transcription) parts.push(`(phiên âm: ${word.transcription})`);
+        if (word.mean) parts.push(`— nghĩa: "${word.mean}"`);
+        if (word.wordtype) parts.push(`— loại từ: ${word.wordtype}`);
+        if (word.example) parts.push(`— ví dụ: "${word.example}"`);
+        parts.push(`. Bao gồm: cách dùng chi tiết, các nghĩa khác (nếu có), thêm ví dụ thực tế, từ đồng nghĩa/trái nghĩa, và mẹo ghi nhớ.`);
+        window.pkaAskAI(parts.join(' '));
+      }
+    });
+  }
 
-        const LANG_MAP = {
-            'en': 'en-US', 'Anh': 'en-US',
-            'ko': 'ko-KR', 'Hàn': 'ko-KR',
-            'ja': 'ja-JP', 'Nhật': 'ja-JP',
-            'zh': 'zh-CN', 'Trung': 'zh-CN',
-            'fr': 'fr-FR', 'Pháp': 'fr-FR',
-        };
+  /* ══════════════════════════════════════════════
+     HELPER: getElementById shorthand
+  ══════════════════════════════════════════════ */
+  const $ = (id) => document.getElementById(id);
 
-        const targetLang = LANG_MAP[lang] || 'en-US';
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = targetLang;
-        u.rate = 0.85;
+  /* ══════════════════════════════════════════════
+     SHOW / HIDE SUB-VIEWS
+  ══════════════════════════════════════════════ */
+  function showSubView(which) {
+    Array.from(coursePage.children).forEach(el => {
+      if (el === topicsView || el === wordsView) return;
+      if (which === 'home') {
+        el.style.display = el.classList.contains('lang-content') ? 'block' : '';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+    topicsView.classList.toggle('cv-hidden', which !== 'topics');
+    wordsView.classList.toggle('cv-hidden', which !== 'words');
+  }
 
-        // Chọn voice phù hợp nhất với ngôn ngữ
-        const voices = window.speechSynthesis.getVoices();
-        if (voices.length > 0) {
-            // Ưu tiên: exact match → prefix match → bất kỳ voice nào
-            const exact = voices.find(v => v.lang === targetLang);
-            const prefix = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
-            if (exact || prefix) u.voice = exact || prefix;
-        }
+  /* ══════════════════════════════════════════════
+     WEB SPEECH - Fixed multi-language voice
+  ══════════════════════════════════════════════ */
+  let _voicesReady = false;
+  let _pendingSpeak = null;
 
-        // Nếu voices chưa sẵn sàng, đợi event voiceschanged
-        if (!_voicesReady && window.speechSynthesis.getVoices().length === 0) {
-            _pendingSpeak = u;
-        } else {
-            window.speechSynthesis.speak(u);
-        }
+  window.speechSynthesis.addEventListener('voiceschanged', () => {
+    _voicesReady = true;
+    if (_pendingSpeak) {
+      window.speechSynthesis.speak(_pendingSpeak);
+      _pendingSpeak = null;
+    }
+  });
+
+  function speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+
+    const LANG_MAP = {
+      'en': 'en-US', 'Anh': 'en-US',
+      'ko': 'ko-KR', 'Hàn': 'ko-KR',
+      'ja': 'ja-JP', 'Nhật': 'ja-JP',
+      'zh': 'zh-CN', 'Trung': 'zh-CN',
+      'fr': 'fr-FR', 'Pháp': 'fr-FR',
+    };
+
+    const targetLang = LANG_MAP[lang] || 'en-US';
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = targetLang;
+    u.rate = 0.85;
+
+    // Chọn voice phù hợp nhất với ngôn ngữ
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      // Ưu tiên: exact match → prefix match → bất kỳ voice nào
+      const exact = voices.find(v => v.lang === targetLang);
+      const prefix = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
+      if (exact || prefix) u.voice = exact || prefix;
     }
 
-    /* ══════════════════════════════════════════════
-       STATS
-    ══════════════════════════════════════════════ */
-    function updateStats(words) {
-        const done = words.filter(w => rememberedMap[w.id]).length;
-        $('cv-total').textContent = words.length;
-        $('cv-done').textContent = done;
-        $('cv-left').textContent = words.length - done;
+    // Nếu voices chưa sẵn sàng, đợi event voiceschanged
+    if (!_voicesReady && window.speechSynthesis.getVoices().length === 0) {
+      _pendingSpeak = u;
+    } else {
+      window.speechSynthesis.speak(u);
     }
+  }
 
-    /* ══════════════════════════════════════════════
-       REGULAR COURSE - OPEN COURSE → TOPIC LIST
-    ══════════════════════════════════════════════ */
-    function openCourse(course) {
-        currentCourse = course;
-        $('cv-course-title').textContent = course.title;
+  /* ══════════════════════════════════════════════
+     STATS
+  ══════════════════════════════════════════════ */
+  function updateStats(words) {
+    const done = words.filter(w => rememberedMap[w.id]).length;
+    $('cv-total').textContent = words.length;
+    $('cv-done').textContent = done;
+    $('cv-left').textContent = words.length - done;
+  }
 
-        const grid = $('cv-topics-grid');
-        grid.innerHTML = '';
+  /* ══════════════════════════════════════════════
+     REGULAR COURSE - OPEN COURSE → TOPIC LIST
+  ══════════════════════════════════════════════ */
+  function openCourse(course) {
+    currentCourse = course;
+    $('cv-course-title').textContent = course.title;
 
-        course.topics.forEach(topic => {
-            const total = topic.words.length;
-            const done = topic.words.filter(w => rememberedMap[w.id]).length;
-            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const grid = $('cv-topics-grid');
+    grid.innerHTML = '';
 
-            const card = document.createElement('div');
-            card.className = 'cv-topic-card reveal';
-            card.innerHTML = `
+    course.topics.forEach(topic => {
+      const total = topic.words.length;
+      const done = topic.words.filter(w => rememberedMap[w.id]).length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      const card = document.createElement('div');
+      card.className = 'cv-topic-card reveal';
+      card.innerHTML = `
         <div class="cv-topic-left">
           <div class="cv-topic-emoji">${topic.title.split(' ')[0]}</div>
           <div class="cv-topic-info">
@@ -526,186 +546,186 @@
           </svg>
         </div>
       `;
-            card.addEventListener('click', () => openTopic(course, topic));
-            grid.appendChild(card);
-        });
+      card.addEventListener('click', () => openTopic(course, topic));
+      grid.appendChild(card);
+    });
 
-        showSubView('topics');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(() => { grid.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed')); }, 80);
-    }
+    showSubView('topics');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => { grid.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed')); }, 80);
+  }
 
-    /* ══════════════════════════════════════════════
-       REGULAR TOPIC → WORD VIEW
-    ══════════════════════════════════════════════ */
-    function openTopic(course, topic) {
-        currentTopic = topic;
-        isCustomMode = false;
-        currentCustomTopicId = null;
+  /* ══════════════════════════════════════════════
+     REGULAR TOPIC → WORD VIEW
+  ══════════════════════════════════════════════ */
+  function openTopic(course, topic) {
+    currentTopic = topic;
+    isCustomMode = false;
+    currentCustomTopicId = null;
 
-        $('cv-back-course-label').textContent = course.title;
-        $('cv-topic-title').textContent = topic.title;
+    $('cv-back-course-label').textContent = course.title;
+    $('cv-topic-title').textContent = topic.title;
 
-        wordsView.classList.remove('cv-custom-mode');
-        $('cv-custom-toolbar').classList.add('cv-hidden');
-        $('cv-col-actions') && ($('cv-col-actions').style.display = '');
+    wordsView.classList.remove('cv-custom-mode');
+    $('cv-custom-toolbar').classList.add('cv-hidden');
+    $('cv-col-actions') && ($('cv-col-actions').style.display = '');
 
-        document.querySelectorAll('.cv-mode-card').forEach(c => c.classList.remove('active'));
-        $('cv-mode-area').innerHTML = '';
-        $('cv-mode-area').classList.add('cv-hidden');
+    document.querySelectorAll('.cv-mode-card').forEach(c => c.classList.remove('active'));
+    $('cv-mode-area').innerHTML = '';
+    $('cv-mode-area').classList.add('cv-hidden');
 
-        renderWordRows(course, topic);
+    renderWordRows(course, topic);
+    updateStats(topic.words);
+    $('cv-empty-words').classList.toggle('cv-hidden', topic.words.length > 0);
+
+    showSubView('words');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ══════════════════════════════════════════════
+     RENDER REGULAR WORD ROWS
+  ══════════════════════════════════════════════ */
+  function renderWordRows(course, topic) {
+    const container = $('cv-word-rows');
+    container.innerHTML = '';
+
+    topic.words.forEach(word => {
+      const rem = !!rememberedMap[word.id];
+      const row = document.createElement('div');
+      row.className = `cv-word-row${rem ? ' cv-word-remembered' : ''}`;
+      row.id = `cv-row-${word.id}`;
+      row.innerHTML = buildWordRowHTML(word, rem, false, true);
+
+      row.querySelectorAll('.cv-voice-btn').forEach(btn =>
+        btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, course.lang); }));
+      row.querySelector('.cv-switch-chk').addEventListener('change', (e) => {
+        if (e.target.checked) rememberedMap[word.id] = true;
+        else delete rememberedMap[word.id];
+        saveRemembered(rememberedMap);
+        row.classList.toggle('cv-word-remembered', e.target.checked);
         updateStats(topic.words);
-        $('cv-empty-words').classList.toggle('cv-hidden', topic.words.length > 0);
+      });
 
-        showSubView('words');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+      /* Click row → mở word detail overlay */
+      row.addEventListener('click', (e) => {
+        if (e.target.closest('button, label, input, a')) return;
+        openWordDetailOverlay(word, true, course.lang);
+      });
 
-    /* ══════════════════════════════════════════════
-       RENDER REGULAR WORD ROWS
-    ══════════════════════════════════════════════ */
-    function renderWordRows(course, topic) {
-        const container = $('cv-word-rows');
-        container.innerHTML = '';
+      container.appendChild(row);
+    });
+  }
 
-        topic.words.forEach(word => {
-            const rem = !!rememberedMap[word.id];
-            const row = document.createElement('div');
-            row.className = `cv-word-row${rem ? ' cv-word-remembered' : ''}`;
-            row.id = `cv-row-${word.id}`;
-            row.innerHTML = buildWordRowHTML(word, rem, false, true);
-
-            row.querySelectorAll('.cv-voice-btn').forEach(btn =>
-                btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, course.lang); }));
-            row.querySelector('.cv-switch-chk').addEventListener('change', (e) => {
-                if (e.target.checked) rememberedMap[word.id] = true;
-                else delete rememberedMap[word.id];
-                saveRemembered(rememberedMap);
-                row.classList.toggle('cv-word-remembered', e.target.checked);
-                updateStats(topic.words);
-            });
-
-            /* Click row → mở word detail overlay */
-            row.addEventListener('click', (e) => {
-                if (e.target.closest('button, label, input, a')) return;
-                openWordDetailOverlay(word, true, course.lang);
-            });
-
-            container.appendChild(row);
-        });
-    }
-
-    /* ══════════════════════════════════════════════
-       MODE CARD CLICK
-    ══════════════════════════════════════════════ */
-    $('cv-modes-grid')?.addEventListener('click', (e) => {
-        const card = e.target.closest('.cv-mode-card');
-        if (!card) return;
-        document.querySelectorAll('.cv-mode-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        const modeArea = $('cv-mode-area');
-        const modeName = card.querySelector('.cv-mode-card-name').textContent;
-        modeArea.classList.remove('cv-hidden');
-        modeArea.innerHTML = `
+  /* ══════════════════════════════════════════════
+     MODE CARD CLICK
+  ══════════════════════════════════════════════ */
+  $('cv-modes-grid')?.addEventListener('click', (e) => {
+    const card = e.target.closest('.cv-mode-card');
+    if (!card) return;
+    document.querySelectorAll('.cv-mode-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    const modeArea = $('cv-mode-area');
+    const modeName = card.querySelector('.cv-mode-card-name').textContent;
+    modeArea.classList.remove('cv-hidden');
+    modeArea.innerHTML = `
       <div class="cv-coming-soon">
         <div class="cv-cs-icon">🚀</div>
         <h3>Đang phát triển</h3>
         <p>Chế độ <strong>${modeName}</strong> sẽ sớm ra mắt!<br>Theo dõi các cập nhật của PKA Study nhé 😊</p>
       </div>`;
-        setTimeout(() => modeArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
-    });
+    setTimeout(() => modeArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+  });
 
-    /* ══════════════════════════════════════════════
-       BACK BUTTONS
-    ══════════════════════════════════════════════ */
-    $('cv-back-to-courses')?.addEventListener('click', () => {
-        showSubView('home');
-        currentCourse = null;
-        currentTopic = null;
-    });
+  /* ══════════════════════════════════════════════
+     BACK BUTTONS
+  ══════════════════════════════════════════════ */
+  $('cv-back-to-courses')?.addEventListener('click', () => {
+    showSubView('home');
+    currentCourse = null;
+    currentTopic = null;
+  });
 
-    $('cv-back-to-topics')?.addEventListener('click', () => {
-        if (isCustomMode) {
-            showSubView('home');
-            activateLangTab('custom');
-            renderCustomPanel();
-            isCustomMode = false;
-            currentCustomTopicId = null;
-        } else {
-            openCourse(currentCourse);
-            currentTopic = null;
+  $('cv-back-to-topics')?.addEventListener('click', () => {
+    if (isCustomMode) {
+      showSubView('home');
+      activateLangTab('custom');
+      renderCustomPanel();
+      isCustomMode = false;
+      currentCustomTopicId = null;
+    } else {
+      openCourse(currentCourse);
+      currentTopic = null;
+    }
+  });
+
+  /* ══════════════════════════════════════════════
+     BIND "HỌC NGAY" BUTTONS (regular courses)
+  ══════════════════════════════════════════════ */
+  function bindLearnButtons() {
+    coursePage.querySelectorAll('.doc-card .btn-primary').forEach(btn => {
+      if (btn.dataset.cvBound) return;
+      btn.dataset.cvBound = '1';
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.doc-card');
+        const courseId = card?.dataset.courseId;
+        if (!courseId || !COURSES_DATA?.[courseId]) {
+          console.warn('[CoursesViewer] Không tìm thấy data cho courseId:', courseId);
+          return;
         }
+        openCourse(COURSES_DATA[courseId]);
+      });
     });
+  }
 
-    /* ══════════════════════════════════════════════
-       BIND "HỌC NGAY" BUTTONS (regular courses)
-    ══════════════════════════════════════════════ */
-    function bindLearnButtons() {
-        coursePage.querySelectorAll('.doc-card .btn-primary').forEach(btn => {
-            if (btn.dataset.cvBound) return;
-            btn.dataset.cvBound = '1';
-            btn.addEventListener('click', () => {
-                const card = btn.closest('.doc-card');
-                const courseId = card?.dataset.courseId;
-                if (!courseId || !COURSES_DATA?.[courseId]) {
-                    console.warn('[CoursesViewer] Không tìm thấy data cho courseId:', courseId);
-                    return;
-                }
-                openCourse(COURSES_DATA[courseId]);
-            });
-        });
-    }
-
-    bindLearnButtons();
-    new MutationObserver(bindLearnButtons)
-        .observe(coursePage, { childList: true, subtree: true });
+  bindLearnButtons();
+  new MutationObserver(bindLearnButtons)
+    .observe(coursePage, { childList: true, subtree: true });
 
 
-    /* ══════════════════════════════════════════════════════════════════
-       ██████╗ ██╗   ██╗███████╗████████╗ ██████╗ ███╗   ███╗
-       ██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔═══██╗████╗ ████║
-       ██║     ██║   ██║███████╗   ██║   ██║   ██║██╔████╔██║
-       ██║     ██║   ██║╚════██║   ██║   ██║   ██║██║╚██╔╝██║
-       ╚██████╗╚██████╔╝███████║   ██║   ╚██████╔╝██║ ╚═╝ ██║
-        ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝
-       TÀI LIỆU CỦA BẠN MODULE
-    ══════════════════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════════════════
+     ██████╗ ██╗   ██╗███████╗████████╗ ██████╗ ███╗   ███╗
+     ██╔════╝██║   ██║██╔════╝╚══██╔══╝██╔═══██╗████╗ ████║
+     ██║     ██║   ██║███████╗   ██║   ██║   ██║██╔████╔██║
+     ██║     ██║   ██║╚════██║   ██║   ██║   ██║██║╚██╔╝██║
+     ╚██████╗╚██████╔╝███████║   ██║   ╚██████╔╝██║ ╚═╝ ██║
+      ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝
+     TÀI LIỆU CỦA BẠN MODULE
+  ══════════════════════════════════════════════════════════════════ */
 
-    /* ── Activate a lang tab programmatically ── */
-    function activateLangTab(lang) {
-        document.querySelectorAll('.lang-tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector(`.lang-tab-btn[data-lang="${lang}"]`)?.classList.add('active');
-        document.querySelectorAll('.lang-content').forEach(p => p.style.display = 'none');
-        const panel = document.getElementById('lang-' + lang);
-        if (panel) panel.style.display = 'block';
-    }
+  /* ── Activate a lang tab programmatically ── */
+  function activateLangTab(lang) {
+    document.querySelectorAll('.lang-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-tab-btn[data-lang="${lang}"]`)?.classList.add('active');
+    document.querySelectorAll('.lang-content').forEach(p => p.style.display = 'none');
+    const panel = document.getElementById('lang-' + lang);
+    if (panel) panel.style.display = 'block';
+  }
 
-    /* ── Update tab badge count ── */
-    function updateCustomTabCount() {
-        const courses = loadCustomCourses();
-        const badge = $('cv-custom-tab-count');
-        if (badge) badge.textContent = courses.length + ' chủ đề';
-    }
+  /* ── Update tab badge count ── */
+  function updateCustomTabCount() {
+    const courses = loadCustomCourses();
+    const badge = $('cv-custom-tab-count');
+    if (badge) badge.textContent = courses.length + ' chủ đề';
+  }
 
-    /* ── Emoji helper ── */
-    function extractEmoji(title) {
-        const match = title.trim().match(/^\p{Emoji}/u);
-        return match ? match[0] : '📝';
-    }
+  /* ── Emoji helper ── */
+  function extractEmoji(title) {
+    const match = title.trim().match(/^\p{Emoji}/u);
+    return match ? match[0] : '📝';
+  }
 
-    /* ══════════════════════════════════════════════
-       RENDER CUSTOM PANEL (#lang-custom)
-    ══════════════════════════════════════════════ */
-    function renderCustomPanel() {
-        const panel = $('lang-custom');
-        if (!panel) return;
+  /* ══════════════════════════════════════════════
+     RENDER CUSTOM PANEL (#lang-custom)
+  ══════════════════════════════════════════════ */
+  function renderCustomPanel() {
+    const panel = $('lang-custom');
+    if (!panel) return;
 
-        const courses = loadCustomCourses();
-        updateCustomTabCount();
+    const courses = loadCustomCourses();
+    updateCustomTabCount();
 
-        if (courses.length === 0) {
-            panel.innerHTML = `
+    if (courses.length === 0) {
+      panel.innerHTML = `
         <div class="lang-content-header">
           <div>
             <div class="card-eyebrow">Của bạn</div>
@@ -719,8 +739,8 @@
           <p>Tạo chủ đề đầu tiên và bắt đầu xây dựng<br>bộ từ vựng cá nhân của bạn!</p>
           <button class="btn btn-primary" id="cv-create-topic-empty-btn">+ Tạo chủ đề đầu tiên</button>
         </div>`;
-        } else {
-            panel.innerHTML = `
+    } else {
+      panel.innerHTML = `
         <div class="lang-content-header">
           <div>
             <div class="card-eyebrow">Của bạn</div>
@@ -729,54 +749,54 @@
           <button class="btn btn-primary btn-small" id="cv-create-topic-btn">+ Tạo chủ đề</button>
         </div>
         <div class="doc-list" id="cv-custom-list"></div>`;
-        }
-
-        $('cv-create-topic-btn')?.addEventListener('click', () => showTopicModal(null));
-        $('cv-create-topic-empty-btn')?.addEventListener('click', () => showTopicModal(null));
-
-        if (courses.length > 0) {
-            const list = $('cv-custom-list');
-            courses.forEach(topic => {
-                const card = buildCustomTopicCard(topic);
-                list.appendChild(card);
-            });
-        }
     }
 
-    window.pkaRenderCustomPanel = renderCustomPanel;
+    $('cv-create-topic-btn')?.addEventListener('click', () => showTopicModal(null));
+    $('cv-create-topic-empty-btn')?.addEventListener('click', () => showTopicModal(null));
 
-    // Reset courses page về màn hình danh sách (home)
-    window.pkaCoursesHome = function () {
-        currentCourse = null;
-        currentTopic = null;
-        isCustomMode = false;
-        currentCustomTopicId = null;
-        showSubView('home');
+    if (courses.length > 0) {
+      const list = $('cv-custom-list');
+      courses.forEach(topic => {
+        const card = buildCustomTopicCard(topic);
+        list.appendChild(card);
+      });
+    }
+  }
 
-        // Bỏ active khỏi tất cả lang-tab-btn
-        document.querySelectorAll('.lang-tab-btn').forEach(function (btn) {
-            btn.classList.remove('active');
-        });
+  window.pkaRenderCustomPanel = renderCustomPanel;
 
-        // Hiện tất cả lang-content
-        document.querySelectorAll('.lang-content').forEach(function (panel) {
-            panel.style.display = 'block';
-        });
+  // Reset courses page về màn hình danh sách (home)
+  window.pkaCoursesHome = function () {
+    currentCourse = null;
+    currentTopic = null;
+    isCustomMode = false;
+    currentCustomTopicId = null;
+    showSubView('home');
 
-        // Render nội dung custom panel
-        renderCustomPanel();
-    };
+    // Bỏ active khỏi tất cả lang-tab-btn
+    document.querySelectorAll('.lang-tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
 
-    /* ── Build a custom topic card DOM element ── */
-    function buildCustomTopicCard(topic) {
-        const wordCount = topic.words.length;
-        const doneCount = topic.words.filter(w => rememberedMap[w.id]).length;
-        const pct = wordCount > 0 ? Math.round((doneCount / wordCount) * 100) : 0;
-        const emoji = extractEmoji(topic.title);
+    // Hiện tất cả lang-content
+    document.querySelectorAll('.lang-content').forEach(function (panel) {
+      panel.style.display = 'block';
+    });
 
-        const card = document.createElement('div');
-        card.className = 'doc-card cv-custom-card reveal revealed';
-        card.innerHTML = `
+    // Render nội dung custom panel
+    renderCustomPanel();
+  };
+
+  /* ── Build a custom topic card DOM element ── */
+  function buildCustomTopicCard(topic) {
+    const wordCount = topic.words.length;
+    const doneCount = topic.words.filter(w => rememberedMap[w.id]).length;
+    const pct = wordCount > 0 ? Math.round((doneCount / wordCount) * 100) : 0;
+    const emoji = extractEmoji(topic.title);
+
+    const card = document.createElement('div');
+    card.className = 'doc-card cv-custom-card reveal revealed';
+    card.innerHTML = `
       <div class="doc-icon-wrap cv-custom-icon-wrap">
         <span class="cv-custom-card-emoji">${emoji}</span>
       </div>
@@ -810,108 +830,110 @@
         </div>
       </div>`;
 
-        card.querySelector('.cv-cc-learn').addEventListener('click', (e) => { e.stopPropagation(); openCustomTopic(topic.id); });
-        card.addEventListener('click', () => openCustomTopic(topic.id));
-        card.querySelector('.cv-cc-edit').addEventListener('click', (e) => { e.stopPropagation(); showTopicModal(topic); });
-        card.querySelector('.cv-cc-delete').addEventListener('click', (e) => { e.stopPropagation(); confirmDeleteTopic(topic); });
-        return card;
-    }
+    card.querySelector('.cv-cc-learn').addEventListener('click', (e) => { e.stopPropagation(); openCustomTopic(topic.id); });
+    card.addEventListener('click', () => openCustomTopic(topic.id));
+    card.querySelector('.cv-cc-edit').addEventListener('click', (e) => { e.stopPropagation(); showTopicModal(topic); });
+    card.querySelector('.cv-cc-delete').addEventListener('click', (e) => { e.stopPropagation(); confirmDeleteTopic(topic); });
+    return card;
+  }
 
-    /* ══════════════════════════════════════════════
-       OPEN CUSTOM TOPIC → WORD VIEW (edit mode)
-    ══════════════════════════════════════════════ */
-    function openCustomTopic(topicId) {
-        const courses = loadCustomCourses();
-        const topic = courses.find(t => t.id === topicId);
-        if (!topic) return;
+  /* ══════════════════════════════════════════════
+     OPEN CUSTOM TOPIC → WORD VIEW (edit mode)
+  ══════════════════════════════════════════════ */
+  function openCustomTopic(topicId) {
+    const courses = loadCustomCourses();
+    const topic = courses.find(t => t.id === topicId);
+    if (!topic) return;
 
-        isCustomMode = true;
-        currentCustomTopicId = topicId;
-        currentTopic = null;
+    isCustomMode = true;
+    currentCustomTopicId = topicId;
+    currentTopic = null;
 
-        $('cv-back-course-label').textContent = 'Tài liệu của bạn';
-        $('cv-topic-title').textContent = topic.title;
+    $('cv-back-course-label').textContent = 'Tài liệu của bạn';
+    $('cv-topic-title').textContent = topic.title;
 
-        wordsView.classList.add('cv-custom-mode');
-        $('cv-custom-toolbar').classList.remove('cv-hidden');
+    wordsView.classList.add('cv-custom-mode');
+    $('cv-custom-toolbar').classList.remove('cv-hidden');
 
-        document.querySelectorAll('.cv-mode-card').forEach(c => c.classList.remove('active'));
-        $('cv-mode-area').innerHTML = '';
-        $('cv-mode-area').classList.add('cv-hidden');
+    document.querySelectorAll('.cv-mode-card').forEach(c => c.classList.remove('active'));
+    $('cv-mode-area').innerHTML = '';
+    $('cv-mode-area').classList.add('cv-hidden');
 
-        refreshCustomWordRows(topic);
-        updateStats(topic.words);
+    refreshCustomWordRows(topic);
+    updateStats(topic.words);
 
-        showSubView('words');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    showSubView('words');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-    /* ── Refresh custom word rows (re-render) ── */
-    function refreshCustomWordRows(topic) {
-        const container = $('cv-word-rows');
-        container.innerHTML = '';
-        updateStats(topic.words);
-        $('cv-empty-words').classList.toggle('cv-hidden', topic.words.length > 0);
+  /* ── Refresh custom word rows (re-render) ── */
+  function refreshCustomWordRows(topic) {
+    const container = $('cv-word-rows');
+    container.innerHTML = '';
+    updateStats(topic.words);
+    $('cv-empty-words').classList.toggle('cv-hidden', topic.words.length > 0);
 
-        topic.words.forEach(word => {
-            const rem = !!rememberedMap[word.id];
-            const row = document.createElement('div');
-            row.className = `cv-word-row${rem ? ' cv-word-remembered' : ''}`;
-            row.id = `cv-row-${word.id}`;
-            row.innerHTML = buildWordRowHTML(word, rem, true, false);
+    topic.words.forEach(word => {
+      const rem = !!rememberedMap[word.id];
+      const row = document.createElement('div');
+      row.className = `cv-word-row${rem ? ' cv-word-remembered' : ''}`;
+      row.id = `cv-row-${word.id}`;
+      row.innerHTML = buildWordRowHTML(word, rem, true, false);
 
-            row.querySelectorAll('.cv-voice-btn').forEach(btn =>
-                btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, topic.lang || 'en'); }));
+      row.querySelectorAll('.cv-voice-btn').forEach(btn =>
+        btn.addEventListener('click', (e) => { e.stopPropagation(); speak(word.word, topic.lang || 'en'); }));
 
-            /* Sync cả hai switch: desktop (.cv-switch-chk) và mobile actions (.cv-switch-chk-extra) */
-            const syncSwitches = (checked) => {
-                row.querySelectorAll('.cv-switch-chk, .cv-switch-chk-extra').forEach(c => c.checked = checked);
-                if (checked) rememberedMap[word.id] = true;
-                else delete rememberedMap[word.id];
-                saveRemembered(rememberedMap);
-                row.classList.toggle('cv-word-remembered', checked);
-                const c = loadCustomCourses();
-                const t = c.find(t => t.id === currentCustomTopicId);
-                if (t) updateStats(t.words);
-            };
-            row.querySelectorAll('.cv-switch-chk, .cv-switch-chk-extra').forEach(chk =>
-                chk.addEventListener('change', (e) => syncSwitches(e.target.checked)));
+      /* Sync cả hai switch: desktop (.cv-switch-chk) và mobile actions (.cv-switch-chk-extra) */
+      const syncSwitches = (checked) => {
+        row.querySelectorAll('.cv-switch-chk, .cv-switch-chk-extra').forEach(c => c.checked = checked);
+        if (checked) rememberedMap[word.id] = true;
+        else delete rememberedMap[word.id];
+        saveRemembered(rememberedMap);
+        row.classList.toggle('cv-word-remembered', checked);
+        const c = loadCustomCourses();
+        const t = c.find(t => t.id === currentCustomTopicId);
+        if (t) updateStats(t.words);
+      };
+      row.querySelectorAll('.cv-switch-chk, .cv-switch-chk-extra').forEach(chk =>
+        chk.addEventListener('change', (e) => syncSwitches(e.target.checked)));
 
-            row.querySelector('.cv-action-edit')?.addEventListener('click', () => showWordModal(word));
-            row.querySelector('.cv-action-delete')?.addEventListener('click', () => {
-                if (confirm(`Xóa từ "${word.word}"?`)) {
-                    deleteWord(currentCustomTopicId, word.id);
-                    const c = loadCustomCourses();
-                    const t = c.find(t => t.id === currentCustomTopicId);
-                    if (t) refreshCustomWordRows(t);
-                }
-            });
+      row.querySelector('.cv-action-edit')?.addEventListener('click', () => showWordModal(word));
+      row.querySelector('.cv-action-delete')?.addEventListener('click', () => {
+        if (confirm(`Xóa từ "${word.word}"?`)) {
+          deleteWord(currentCustomTopicId, word.id);
+          const c = loadCustomCourses();
+          const t = c.find(t => t.id === currentCustomTopicId);
+          if (t) refreshCustomWordRows(t);
+        }
+      });
 
-            /* Click row → mở word detail overlay */
-            row.addEventListener('click', (e) => {
-                if (e.target.closest('button, label, input, a')) return;
-                openWordDetailOverlay(word, false, topic.lang || 'en');
-            });
-        });
-    }
+      /* Click row → mở word detail overlay */
+      row.addEventListener('click', (e) => {
+        if (e.target.closest('button, label, input, a')) return;
+        openWordDetailOverlay(word, false, topic.lang || 'en');
+      });
 
-    /* ══════════════════════════════════════════════
-       BUILD WORD ROW HTML (shared)
-    ══════════════════════════════════════════════ */
-    function buildWordRowHTML(word, rem, withActions, showAddBtn) {
-        const voiceIconSm = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
-        const voiceIconMd = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
-        const addToMyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>`;
-        const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"/></svg>`;
+      container.appendChild(row);
+    });
+  }
 
-        /* Switch HTML — dùng lại cho cả desktop (.cv-switch-chk) và mobile custom actions */
-        const switchHtml = (extraClass = '') => `
+  /* ══════════════════════════════════════════════
+     BUILD WORD ROW HTML (shared)
+  ══════════════════════════════════════════════ */
+  function buildWordRowHTML(word, rem, withActions, showAddBtn) {
+    const voiceIconSm = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
+    const voiceIconMd = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M2 16.0001H5.88889L11.1834 20.3319C11.2727 20.405 11.3846 20.4449 11.5 20.4449C11.7761 20.4449 12 20.2211 12 19.9449V4.05519C12 3.93977 11.9601 3.8279 11.8871 3.73857C11.7129 3.52485 11.3991 3.49335 11.1854 3.66756L5.88889 8.00007H2C1.44772 8.00007 1 8.44778 1 9.00007V15.0001C1 15.5524 1.44772 16.0001 2 16.0001ZM23 12C23 15.292 21.5539 18.2463 19.2622 20.2622L17.8445 18.8444C19.7758 17.1937 21 14.7398 21 12C21 9.26016 19.7758 6.80629 17.8445 5.15557L19.2622 3.73779C21.5539 5.75368 23 8.70795 23 12ZM18 12C18 13.9004 17.2558 15.6248 16.0497 16.9003L14.6319 15.4826C15.4819 14.5699 16 13.3459 16 12C16 10.6541 15.4819 9.43013 14.6319 8.51742L16.0497 7.09966C17.2558 8.37516 18 10.0996 18 12Z"/></svg>`;
+    const addToMyIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"/></svg>`;
+    const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"/></svg>`;
+
+    /* Switch HTML — dùng lại cho cả desktop (.cv-switch-chk) và mobile custom actions */
+    const switchHtml = (extraClass = '') => `
           <label class="cv-switch${extraClass ? ' ' + extraClass : ''}" title="${rem ? 'Đã thuộc' : 'Chưa thuộc'}">
             <input type="checkbox" class="cv-switch-chk${extraClass ? ' cv-switch-chk-extra' : ''}" ${rem ? 'checked' : ''}>
             <span class="cv-switch-track"><span class="cv-switch-thumb"></span></span>
           </label>`;
 
-        return `
+    return `
       <div class="cv-cell cv-cell-word">
         <div class="cv-word-main">
           <strong class="cv-word-text">${escHtml(word.word)}</strong>
@@ -957,96 +979,96 @@
 
       `;
 
+  }
+
+  /* ══════════════════════════════════════════════
+     CUSTOM TOOLBAR BUTTONS
+  ══════════════════════════════════════════════ */
+  $('cv-add-word-btn')?.addEventListener('click', () => showWordModal(null));
+  $('cv-ai-gen-btn')?.addEventListener('click', () => showAIModal());
+
+  /* ══════════════════════════════════════════════
+     TOPIC CRUD
+  ══════════════════════════════════════════════ */
+  function createTopic(data) {
+    const courses = loadCustomCourses();
+    courses.push({ id: genId('ct'), title: data.title, description: data.description, lang: data.lang || 'en', words: [] });
+    saveCustomCourses(courses);
+  }
+
+  function updateTopic(topicId, data) {
+    const courses = loadCustomCourses();
+    const idx = courses.findIndex(t => t.id === topicId);
+    if (idx >= 0) {
+      courses[idx].title = data.title;
+      courses[idx].description = data.description;
+      courses[idx].lang = data.lang || 'en';
     }
+    saveCustomCourses(courses);
+  }
 
-    /* ══════════════════════════════════════════════
-       CUSTOM TOOLBAR BUTTONS
-    ══════════════════════════════════════════════ */
-    $('cv-add-word-btn')?.addEventListener('click', () => showWordModal(null));
-    $('cv-ai-gen-btn')?.addEventListener('click', () => showAIModal());
+  function deleteTopic(topicId) {
+    const courses = loadCustomCourses().filter(t => t.id !== topicId);
+    saveCustomCourses(courses);
+  }
 
-    /* ══════════════════════════════════════════════
-       TOPIC CRUD
-    ══════════════════════════════════════════════ */
-    function createTopic(data) {
-        const courses = loadCustomCourses();
-        courses.push({ id: genId('ct'), title: data.title, description: data.description, lang: data.lang || 'en', words: [] });
-        saveCustomCourses(courses);
-    }
+  /* ══════════════════════════════════════════════
+     WORD CRUD
+  ══════════════════════════════════════════════ */
+  function addWord(topicId, wordData) {
+    const courses = loadCustomCourses();
+    const topic = courses.find(t => t.id === topicId);
+    if (topic) topic.words.push({ id: genId('cw'), ...wordData });
+    saveCustomCourses(courses);
+  }
 
-    function updateTopic(topicId, data) {
-        const courses = loadCustomCourses();
-        const idx = courses.findIndex(t => t.id === topicId);
-        if (idx >= 0) {
-            courses[idx].title = data.title;
-            courses[idx].description = data.description;
-            courses[idx].lang = data.lang || 'en';
-        }
-        saveCustomCourses(courses);
-    }
+  function updateWord(topicId, wordId, wordData) {
+    const courses = loadCustomCourses();
+    const topic = courses.find(t => t.id === topicId);
+    if (!topic) return;
+    const idx = topic.words.findIndex(w => w.id === wordId);
+    if (idx >= 0) topic.words[idx] = { id: wordId, ...wordData };
+    saveCustomCourses(courses);
+  }
 
-    function deleteTopic(topicId) {
-        const courses = loadCustomCourses().filter(t => t.id !== topicId);
-        saveCustomCourses(courses);
-    }
+  function deleteWord(topicId, wordId) {
+    const courses = loadCustomCourses();
+    const topic = courses.find(t => t.id === topicId);
+    if (topic) topic.words = topic.words.filter(w => w.id !== wordId);
+    saveCustomCourses(courses);
+  }
 
-    /* ══════════════════════════════════════════════
-       WORD CRUD
-    ══════════════════════════════════════════════ */
-    function addWord(topicId, wordData) {
-        const courses = loadCustomCourses();
-        const topic = courses.find(t => t.id === topicId);
-        if (topic) topic.words.push({ id: genId('cw'), ...wordData });
-        saveCustomCourses(courses);
-    }
+  function addManyWords(topicId, wordsArray) {
+    const courses = loadCustomCourses();
+    const topic = courses.find(t => t.id === topicId);
+    if (topic) wordsArray.forEach(w => topic.words.push({ id: genId('cw'), ...w }));
+    saveCustomCourses(courses);
+  }
 
-    function updateWord(topicId, wordId, wordData) {
-        const courses = loadCustomCourses();
-        const topic = courses.find(t => t.id === topicId);
-        if (!topic) return;
-        const idx = topic.words.findIndex(w => w.id === wordId);
-        if (idx >= 0) topic.words[idx] = { id: wordId, ...wordData };
-        saveCustomCourses(courses);
-    }
+  /* ══════════════════════════════════════════════
+     HELPERS
+  ══════════════════════════════════════════════ */
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
-    function deleteWord(topicId, wordId) {
-        const courses = loadCustomCourses();
-        const topic = courses.find(t => t.id === topicId);
-        if (topic) topic.words = topic.words.filter(w => w.id !== wordId);
-        saveCustomCourses(courses);
-    }
+  function showInputError(input, msg) {
+    input.classList.add('cv-input-error');
+    input.placeholder = msg;
+    input.focus();
+    input.addEventListener('input', () => input.classList.remove('cv-input-error'), { once: true });
+  }
 
-    function addManyWords(topicId, wordsArray) {
-        const courses = loadCustomCourses();
-        const topic = courses.find(t => t.id === topicId);
-        if (topic) wordsArray.forEach(w => topic.words.push({ id: genId('cw'), ...w }));
-        saveCustomCourses(courses);
-    }
-
-    /* ══════════════════════════════════════════════
-       HELPERS
-    ══════════════════════════════════════════════ */
-    function escHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
-    }
-
-    function showInputError(input, msg) {
-        input.classList.add('cv-input-error');
-        input.placeholder = msg;
-        input.focus();
-        input.addEventListener('input', () => input.classList.remove('cv-input-error'), { once: true });
-    }
-
-    /* ══════════════════════════════════════════════
-       MODAL: CREATE / EDIT TOPIC
-    ══════════════════════════════════════════════ */
-    function showTopicModal(existing) {
-        const isEdit = !!existing;
-        openModal(`
+  /* ══════════════════════════════════════════════
+     MODAL: CREATE / EDIT TOPIC
+  ══════════════════════════════════════════════ */
+  function showTopicModal(existing) {
+    const isEdit = !!existing;
+    openModal(`
       <div class="cv-modal-header">
         <h3>${isEdit ? '✏️ Sửa chủ đề' : '📁 Tạo chủ đề mới'}</h3>
         <button class="cv-modal-close" id="cv-modal-close-btn">&times;</button>
@@ -1081,36 +1103,36 @@
         <button class="btn btn-primary" id="cv-topic-save">${isEdit ? 'Lưu thay đổi' : 'Tạo chủ đề'}</button>
       </div>`);
 
-        $('cv-modal-close-btn').addEventListener('click', closeModal);
-        $('cv-topic-cancel').addEventListener('click', closeModal);
-        $('cv-topic-save').addEventListener('click', () => {
-            const title = $('cv-topic-title-input').value.trim();
-            const desc = $('cv-topic-desc-input').value.trim();
-            const lang = $('cv-topic-lang-input').value;
-            // FIX: validate tên chủ đề (thay thế placeholder { ... })
-            if (!title) {
-                showInputError($('cv-topic-title-input'), 'Vui lòng nhập tên chủ đề');
-                return;
-            }
-            if (isEdit) updateTopic(existing.id, { title, description: desc, lang });
-            else createTopic({ title, description: desc, lang });
-            closeModal();
-            renderCustomPanel();
-        });
+    $('cv-modal-close-btn').addEventListener('click', closeModal);
+    $('cv-topic-cancel').addEventListener('click', closeModal);
+    $('cv-topic-save').addEventListener('click', () => {
+      const title = $('cv-topic-title-input').value.trim();
+      const desc = $('cv-topic-desc-input').value.trim();
+      const lang = $('cv-topic-lang-input').value;
+      // FIX: validate tên chủ đề (thay thế placeholder { ... })
+      if (!title) {
+        showInputError($('cv-topic-title-input'), 'Vui lòng nhập tên chủ đề');
+        return;
+      }
+      if (isEdit) updateTopic(existing.id, { title, description: desc, lang });
+      else createTopic({ title, description: desc, lang });
+      closeModal();
+      renderCustomPanel();
+    });
 
-        $('cv-topic-title-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') $('cv-topic-save').click();
-        });
-    }
+    $('cv-topic-title-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') $('cv-topic-save').click();
+    });
+  }
 
-    /* ══════════════════════════════════════════════
-       MODAL: CREATE / EDIT WORD
-    ══════════════════════════════════════════════ */
-    const WORD_TYPES = ['danh từ', 'động từ', 'tính từ', 'trạng từ', 'cụm từ', 'thành ngữ', 'khác'];
+  /* ══════════════════════════════════════════════
+     MODAL: CREATE / EDIT WORD
+  ══════════════════════════════════════════════ */
+  const WORD_TYPES = ['danh từ', 'động từ', 'tính từ', 'trạng từ', 'cụm từ', 'thành ngữ', 'khác'];
 
-    function showWordModal(existing) {
-        const isEdit = !!existing;
-        openModal(`
+  function showWordModal(existing) {
+    const isEdit = !!existing;
+    openModal(`
       <div class="cv-modal-header">
         <h3>${isEdit ? '✏️ Sửa từ vựng' : '➕ Thêm từ vựng mới'}</h3>
         <button class="cv-modal-close" id="cv-modal-close-btn">&times;</button>
@@ -1149,34 +1171,34 @@
         <button class="btn btn-primary" id="cv-word-save">${isEdit ? 'Lưu thay đổi' : 'Thêm từ'}</button>
       </div>`);
 
-        $('cv-modal-close-btn').addEventListener('click', closeModal);
-        $('cv-word-cancel').addEventListener('click', closeModal);
-        $('cv-word-save').addEventListener('click', () => {
-            const word = $('cv-wf-word').value.trim();
-            const mean = $('cv-wf-mean').value.trim();
-            if (!word) { showInputError($('cv-wf-word'), 'Vui lòng nhập từ vựng'); return; }
-            if (!mean) { showInputError($('cv-wf-mean'), 'Vui lòng nhập nghĩa'); return; }
-            const data = {
-                word,
-                transcription: $('cv-wf-trans').value.trim(),
-                mean,
-                wordtype: $('cv-wf-type').value,
-                example: $('cv-wf-example').value.trim()
-            };
-            if (isEdit) updateWord(currentCustomTopicId, existing.id, data);
-            else addWord(currentCustomTopicId, data);
-            closeModal();
-            const courses = loadCustomCourses();
-            const topic = courses.find(t => t.id === currentCustomTopicId);
-            if (topic) refreshCustomWordRows(topic);
-        });
-    }
+    $('cv-modal-close-btn').addEventListener('click', closeModal);
+    $('cv-word-cancel').addEventListener('click', closeModal);
+    $('cv-word-save').addEventListener('click', () => {
+      const word = $('cv-wf-word').value.trim();
+      const mean = $('cv-wf-mean').value.trim();
+      if (!word) { showInputError($('cv-wf-word'), 'Vui lòng nhập từ vựng'); return; }
+      if (!mean) { showInputError($('cv-wf-mean'), 'Vui lòng nhập nghĩa'); return; }
+      const data = {
+        word,
+        transcription: $('cv-wf-trans').value.trim(),
+        mean,
+        wordtype: $('cv-wf-type').value,
+        example: $('cv-wf-example').value.trim()
+      };
+      if (isEdit) updateWord(currentCustomTopicId, existing.id, data);
+      else addWord(currentCustomTopicId, data);
+      closeModal();
+      const courses = loadCustomCourses();
+      const topic = courses.find(t => t.id === currentCustomTopicId);
+      if (topic) refreshCustomWordRows(topic);
+    });
+  }
 
-    /* ══════════════════════════════════════════════
-       MODAL: CONFIRM DELETE TOPIC
-    ══════════════════════════════════════════════ */
-    function confirmDeleteTopic(topic) {
-        openModal(`
+  /* ══════════════════════════════════════════════
+     MODAL: CONFIRM DELETE TOPIC
+  ══════════════════════════════════════════════ */
+  function confirmDeleteTopic(topic) {
+    openModal(`
       <div class="cv-modal-header">
         <h3>🗑️ Xóa chủ đề</h3>
         <button class="cv-modal-close" id="cv-modal-close-btn">&times;</button>
@@ -1191,32 +1213,32 @@
         <button class="btn cv-btn-danger" id="cv-del-confirm">Xóa chủ đề</button>
       </div>`);
 
-        $('cv-modal-close-btn').addEventListener('click', closeModal);
-        $('cv-del-cancel').addEventListener('click', closeModal);
-        $('cv-del-confirm').addEventListener('click', () => {
-            deleteTopic(topic.id);
-            closeModal();
-            renderCustomPanel();
-        });
-    }
+    $('cv-modal-close-btn').addEventListener('click', closeModal);
+    $('cv-del-cancel').addEventListener('click', closeModal);
+    $('cv-del-confirm').addEventListener('click', () => {
+      deleteTopic(topic.id);
+      closeModal();
+      renderCustomPanel();
+    });
+  }
 
-    /* ══════════════════════════════════════════════
-       MODAL: AI GENERATE WORDS
-    ══════════════════════════════════════════════ */
-    const AI_API_URL = 'https://platform.beeknoee.com/api/v1/chat/completions';
-    const AI_BEARER = 'sk-bee-c3b440a14f7a434283c95709c96c5879';
+  /* ══════════════════════════════════════════════
+     MODAL: AI GENERATE WORDS
+  ══════════════════════════════════════════════ */
+  const AI_API_URL = 'https://platform.beeknoee.com/api/v1/chat/completions';
+  const AI_BEARER = 'sk-bee-c3b440a14f7a434283c95709c96c5879';
 
-    function showAIModal() {
-        // Lấy lang từ topic hiện tại, không cho user chọn lại
-        const courses = loadCustomCourses();
-        const topic = courses.find(t => t.id === currentCustomTopicId);
-        const topicLang = topic?.lang || 'en';
-        const topicLangLabel = LANG_LABEL[topicLang] || 'Anh';
+  function showAIModal() {
+    // Lấy lang từ topic hiện tại, không cho user chọn lại
+    const courses = loadCustomCourses();
+    const topic = courses.find(t => t.id === currentCustomTopicId);
+    const topicLang = topic?.lang || 'en';
+    const topicLangLabel = LANG_LABEL[topicLang] || 'Anh';
 
-        const FLAG_MAP = { 'en': '🇺🇸', 'ko': '🇰🇷', 'ja': '🇯🇵', 'zh': '🇨🇳', 'fr': '🇫🇷' };
-        const flag = FLAG_MAP[topicLang] || '🌐';
+    const FLAG_MAP = { 'en': '🇺🇸', 'ko': '🇰🇷', 'ja': '🇯🇵', 'zh': '🇨🇳', 'fr': '🇫🇷' };
+    const flag = FLAG_MAP[topicLang] || '🌐';
 
-        openModal(`
+    openModal(`
       <div class="cv-modal-header">
         <h3>✨ AI tạo từ vựng hàng loạt</h3>
         <button class="cv-modal-close" id="cv-modal-close-btn">&times;</button>
@@ -1254,72 +1276,72 @@
         <button class="cv-btn-ai cv-btn-ai-large" id="cv-ai-generate-btn">✨ Tạo từ vựng</button>
       </div>`);
 
-        $('cv-modal-close-btn').addEventListener('click', closeModal);
-        $('cv-ai-cancel').addEventListener('click', closeModal);
-        $('cv-ai-generate-btn').addEventListener('click', () => runAIGeneration(topicLang, topicLangLabel));
-        $('cv-ai-theme').addEventListener('keydown', (e) => { if (e.key === 'Enter') runAIGeneration(topicLang, topicLangLabel); });
-    }
+    $('cv-modal-close-btn').addEventListener('click', closeModal);
+    $('cv-ai-cancel').addEventListener('click', closeModal);
+    $('cv-ai-generate-btn').addEventListener('click', () => runAIGeneration(topicLang, topicLangLabel));
+    $('cv-ai-theme').addEventListener('keydown', (e) => { if (e.key === 'Enter') runAIGeneration(topicLang, topicLangLabel); });
+  }
 
-    async function runAIGeneration(topicLang, topicLangLabel) {
-        const theme = $('cv-ai-theme').value.trim();
-        const lang = topicLangLabel;   // lấy từ topic, không từ select
-        const count = parseInt($('cv-ai-count').value);
+  async function runAIGeneration(topicLang, topicLangLabel) {
+    const theme = $('cv-ai-theme').value.trim();
+    const lang = topicLangLabel;   // lấy từ topic, không từ select
+    const count = parseInt($('cv-ai-count').value);
 
-        if (!theme) { showInputError($('cv-ai-theme'), 'Vui lòng nhập chủ đề'); return; }
+    if (!theme) { showInputError($('cv-ai-theme'), 'Vui lòng nhập chủ đề'); return; }
 
-        $('cv-ai-modal-body').innerHTML = `
+    $('cv-ai-modal-body').innerHTML = `
       <div class="cv-ai-loading">
         <div class="cv-ai-spinner"></div>
         <p>AI đang tạo <strong>${count} từ vựng tiếng ${lang}</strong><br>về "<em>${escHtml(theme)}</em>"...</p>
       </div>`;
-        $('cv-modal-box').querySelector('.cv-modal-footer').innerHTML = '';
+    $('cv-modal-box').querySelector('.cv-modal-footer').innerHTML = '';
 
-        try {
-            const words = await callAIForWords(theme, lang, count);
-            showAIPreview(words, theme, lang);
-        } catch (err) {
-            $('cv-ai-modal-body').innerHTML = `
+    try {
+      const words = await callAIForWords(theme, lang, count);
+      showAIPreview(words, theme, lang);
+    } catch (err) {
+      $('cv-ai-modal-body').innerHTML = `
         <div class="cv-ai-error">
           <div style="font-size:2.5rem;margin-bottom:12px">😕</div>
           <p>Có lỗi xảy ra khi gọi AI.<br><small style="color:var(--gray-light)">${escHtml(err.message)}</small></p>
           <button class="btn btn-primary" id="cv-ai-retry">Thử lại</button>
         </div>`;
-            $('cv-modal-box').querySelector('.cv-modal-footer').innerHTML = '';
-            $('cv-ai-retry')?.addEventListener('click', () => showAIModal());
-        }
+      $('cv-modal-box').querySelector('.cv-modal-footer').innerHTML = '';
+      $('cv-ai-retry')?.addEventListener('click', () => showAIModal());
     }
+  }
 
-    async function callAIForWords(theme, lang, count) {
-        const prompt = `Tạo ${count} từ vựng tiếng ${lang} về chủ đề: "${theme}".
+  async function callAIForWords(theme, lang, count) {
+    const prompt = `Tạo ${count} từ vựng tiếng ${lang} về chủ đề: "${theme}".
 Yêu cầu: Trả về CHỈ một JSON array hợp lệ, không có markdown, không có backtick, không có chú thích.
 Mỗi phần tử trong array là một object với đúng 6 trường:
 {"word":"từ vựng tiếng ${lang}","transcription":"phiên âm IPA","mean":"nghĩa tiếng Việt","wordtype":"danh từ/động từ/tính từ/...","example":"câu ví dụ ngắn bằng tiếng ${lang}","example_vi":"bản dịch tiếng Việt của câu ví dụ"}`;
 
-        const resp = await fetch(AI_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI_BEARER}` },
-            body: JSON.stringify({
-                model: 'llama3.1-8b',
-                messages: [{ role: 'user', content: prompt }],
-                max_tokens: 3000,
-                temperature: 0.35,
-                stream: false
-            })
-        });
+    const resp = await fetch(AI_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI_BEARER}` },
+      body: JSON.stringify({
+        model: 'llama3.1-8b',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 3000,
+        temperature: 0.35,
+        stream: false
+      })
+    });
 
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        let text = data.choices?.[0]?.message?.content || '';
-        text = text.replace(/```json[\s\S]*?```/g, m => m.replace(/```json|```/g, '')).replace(/```/g, '').trim();
-        const match = text.match(/\[[\s\S]*\]/);
-        if (!match) throw new Error('Hãy thử lại sau vài giây~');
-        return JSON.parse(match[0]);
-    }
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    let text = data.choices?.[0]?.message?.content || '';
+    text = text.replace(/```json[\s\S]*?```/g, m => m.replace(/```json|```/g, '')).replace(/```/g, '').trim();
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('Hãy thử lại sau vài giây~');
+    return JSON.parse(match[0]);
+  }
 
-    function showAIPreview(words, theme, lang) {
-        if (!words || !words.length) { throw new Error('Danh sách từ trống'); }
+  function showAIPreview(words, theme, lang) {
+    if (!words || !words.length) { throw new Error('Danh sách từ trống'); }
 
-        const rows = words.map((w, i) => `
+    const rows = words.map((w, i) => `
       <div class="cv-ai-preview-row" id="cv-ai-row-${i}">
         <label class="cv-ai-check-wrap">
           <input type="checkbox" class="cv-ai-chk" data-idx="${i}" checked>
@@ -1334,7 +1356,7 @@ Mỗi phần tử trong array là một object với đúng 6 trường:
         <div class="cv-ai-preview-example">${escHtml(w.example || '')}</div>
       </div>`).join('');
 
-        $('cv-ai-modal-body').innerHTML = `
+    $('cv-ai-modal-body').innerHTML = `
       <div class="cv-ai-preview-header">
         <p>✅ AI tạo được <strong>${words.length} từ vựng tiếng ${lang}</strong> về "<em>${escHtml(theme)}</em>"</p>
         <label class="cv-ai-select-all-wrap">
@@ -1349,52 +1371,52 @@ Mỗi phần tử trong array là một object với đúng 6 trường:
         <div class="cv-ai-preview-rows">${rows}</div>
       </div>`;
 
-        $('cv-modal-box').querySelector('.cv-modal-footer').innerHTML = `
+    $('cv-modal-box').querySelector('.cv-modal-footer').innerHTML = `
       <span class="cv-ai-selected-count" id="cv-ai-selected-count">${words.length} từ được chọn</span>
       <button class="btn btn-secondary" id="cv-ai-back-btn">← Tạo lại</button>
       <button class="btn btn-primary" id="cv-ai-add-btn">Thêm vào danh sách</button>`;
 
-        $('cv-ai-select-all').addEventListener('change', (e) => {
-            document.querySelectorAll('.cv-ai-chk').forEach(cb => cb.checked = e.target.checked);
-            updateSelectedCount();
-        });
-        document.querySelectorAll('.cv-ai-chk').forEach(cb => cb.addEventListener('change', updateSelectedCount));
+    $('cv-ai-select-all').addEventListener('change', (e) => {
+      document.querySelectorAll('.cv-ai-chk').forEach(cb => cb.checked = e.target.checked);
+      updateSelectedCount();
+    });
+    document.querySelectorAll('.cv-ai-chk').forEach(cb => cb.addEventListener('change', updateSelectedCount));
 
-        $('cv-ai-back-btn').addEventListener('click', () => showAIModal());
-        $('cv-ai-add-btn').addEventListener('click', () => {
-            const selected = [...document.querySelectorAll('.cv-ai-chk:checked')]
-                .map(cb => words[parseInt(cb.dataset.idx)])
-                .filter(Boolean);
-            if (!selected.length) { alert('Vui lòng chọn ít nhất 1 từ'); return; }
-            addManyWords(currentCustomTopicId, selected);
-            closeModal();
-            const courses = loadCustomCourses();
-            const topic = courses.find(t => t.id === currentCustomTopicId);
-            if (topic) refreshCustomWordRows(topic);
-        });
-    }
+    $('cv-ai-back-btn').addEventListener('click', () => showAIModal());
+    $('cv-ai-add-btn').addEventListener('click', () => {
+      const selected = [...document.querySelectorAll('.cv-ai-chk:checked')]
+        .map(cb => words[parseInt(cb.dataset.idx)])
+        .filter(Boolean);
+      if (!selected.length) { alert('Vui lòng chọn ít nhất 1 từ'); return; }
+      addManyWords(currentCustomTopicId, selected);
+      closeModal();
+      const courses = loadCustomCourses();
+      const topic = courses.find(t => t.id === currentCustomTopicId);
+      if (topic) refreshCustomWordRows(topic);
+    });
+  }
 
-    function updateSelectedCount() {
-        const count = document.querySelectorAll('.cv-ai-chk:checked').length;
-        const el = $('cv-ai-selected-count');
-        if (el) el.textContent = count + ' từ được chọn';
-        const all = $('cv-ai-select-all');
-        if (all) all.checked = count === document.querySelectorAll('.cv-ai-chk').length;
-    }
+  function updateSelectedCount() {
+    const count = document.querySelectorAll('.cv-ai-chk:checked').length;
+    const el = $('cv-ai-selected-count');
+    if (el) el.textContent = count + ' từ được chọn';
+    const all = $('cv-ai-select-all');
+    if (all) all.checked = count === document.querySelectorAll('.cv-ai-chk').length;
+  }
 
-    /* ══════════════════════════════════════════════
-       INIT
-    ══════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════
+     INIT
+  ══════════════════════════════════════════════ */
 
-    // Lắng nghe click tab "Tài liệu của bạn" (đã có trong dashboard.js nhưng giữ lại để dự phòng)
-    document.querySelector('.lang-tab-btn[data-lang="custom"]')
-        ?.addEventListener('click', renderCustomPanel);
+  // Lắng nghe click tab "Tài liệu của bạn" (đã có trong dashboard.js nhưng giữ lại để dự phòng)
+  document.querySelector('.lang-tab-btn[data-lang="custom"]')
+    ?.addEventListener('click', renderCustomPanel);
 
-    // Cập nhật badge số chủ đề ngay khi tải trang
-    updateCustomTabCount();
+  // Cập nhật badge số chủ đề ngay khi tải trang
+  updateCustomTabCount();
 
-    // ════════════════════════════════════════════════
-    // FIX: Đóng IIFE - đây là dòng bị thiếu gây toàn bộ
-    //      script không chạy (SyntaxError unclosed function)
-    // ════════════════════════════════════════════════
+  // ════════════════════════════════════════════════
+  // FIX: Đóng IIFE - đây là dòng bị thiếu gây toàn bộ
+  //      script không chạy (SyntaxError unclosed function)
+  // ════════════════════════════════════════════════
 })();

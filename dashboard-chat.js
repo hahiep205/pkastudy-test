@@ -303,4 +303,16 @@ Nếu câu hỏi không thuộc các mục trên, hãy trả lời như một gi
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    /* ── Global API: mở chat và tự gửi tin nhắn ── */
+    window.pkaAskAI = function (message) {
+        openChat();
+        // Đợi chat mở xong rồi gửi
+        setTimeout(() => {
+            input.value = message;
+            input.style.height = 'auto';
+            input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+            sendMessage();
+        }, 120);
+    };
+
 })();
